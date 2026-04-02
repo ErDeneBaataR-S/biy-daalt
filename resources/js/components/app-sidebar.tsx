@@ -21,7 +21,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { backlog, dashboard } from '@/routes';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
@@ -38,9 +38,8 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Backlog',
-        href: '#backlog',
+        href: backlog(),
         icon: ListTodo,
-        disabled: true,
     },
     {
         title: 'Feedback',
