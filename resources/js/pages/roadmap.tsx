@@ -1,7 +1,3 @@
-import { router } from '@inertiajs/react';
-import { AppShell } from '@/components/app-shell';
-import { Head } from '@inertiajs/react';
-import { useState } from 'react';
 import {
     DndContext,
     closestCenter,
@@ -13,8 +9,12 @@ import {
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { RoadmapShell } from '@/components/roadmap/roadmap-shell';
+import { Head } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
+import { useState } from 'react';
+import { AppShell } from '@/components/app-shell';
 import { RoadmapDialog } from '@/components/roadmap/roadmap-dialog';
+import { RoadmapShell } from '@/components/roadmap/roadmap-shell';
 
 type Item = {
     id: number;
@@ -29,6 +29,7 @@ export default function Roadmap({ items }: { items: Item[] }) {
     const handleSubmit = (title: string, status: Item['status']) => {
         if (editing) {
             router.put(`/roadmap/${editing.id}`, { title, status });
+
             return;
         }
 
@@ -41,10 +42,16 @@ export default function Roadmap({ items }: { items: Item[] }) {
 
     const handleDragEnd = (event: any) => {
         const { over, active } = event;
-        if (!over) return;
+
+        if (!over) {
+return;
+}
 
         const item = items.find(i => i.id === active.id);
-        if (!item) return;
+
+        if (!item) {
+return;
+}
 
         router.put(`/roadmap/${active.id}`, {
             title: item.title,

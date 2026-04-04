@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { AppSidebar } from '@/components/app-sidebar';
 import { AppContent } from '@/components/app-content';
+import { AppSidebar } from '@/components/app-sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 type Props = {
     children: ReactNode;
