@@ -1,8 +1,5 @@
-import {
-    DndContext,
-    closestCenter,
-    useDroppable,
-} from '@dnd-kit/core';
+import { closestCenter, DndContext, useDroppable } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
 import {
     SortableContext,
     useSortable,
@@ -10,68 +7,195 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Head } from '@inertiajs/react';
-import { router } from '@inertiajs/react';
-import { useState } from 'react';
-import { AppShell } from '@/components/app-shell';
+import { useEffect, useState } from 'react';
 import { RoadmapDialog } from '@/components/roadmap/roadmap-dialog';
 import { RoadmapShell } from '@/components/roadmap/roadmap-shell';
+import AppLayout from '@/layouts/app-layout';
+import { roadmap } from '@/routes';
+import type { BreadcrumbItem } from '@/types';
+
+type Status = 'now' | 'next' | 'later';
 
 type Item = {
     id: number;
     title: string;
-    status: 'now' | 'next' | 'later';
+    status: Status;
 };
 
-export default function Roadmap({ items }: { items: Item[] }) {
+type ColumnProps = {
+    id: Status;
+    title: string;
+    items: Item[];
+    onEdit: (item: Item) => void;
+    onOpen: (open: boolean) => void;
+    onDelete: (id: Item['id']) => void;
+};
+
+type CardProps = {
+    item: Item;
+    onEdit: () => void;
+    onDelete: () => void;
+};
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Roadmap',
+        href: roadmap(),
+    },
+];
+
+const storageKey = 'biydaalt.roadmap.v1';
+
+const defaultItems: Item[] = [
+    {
+        id: 101,
+        title: 'Refine the onboarding flow',
+        status: 'now',
+    },
+    {
+        id: 102,
+        title: 'Ship feedback collection',
+        status: 'now',
+    },
+    {
+        id: 201,
+        title: 'Draft release milestones',
+        status: 'next',
+    },
+    {
+        id: 202,
+        title: 'Align cross-team dependencies',
+        status: 'next',
+    },
+    {
+        id: 301,
+        title: 'Explore customer-facing timeline views',
+        status: 'later',
+    },
+];
+
+const validStatuses: Status[] = ['now', 'next', 'later'];
+
+function createId() {
+    return Math.floor(Date.now() + Math.random() * 1000);
+}
+
+function isStatus(value: unknown): value is Status {
+    return typeof value === 'string' && validStatuses.includes(value as Status);
+}
+
+function readRoadmapData() {
+    if (typeof window === 'undefined') {
+        return defaultItems;
+    }
+
+    try {
+        const raw = window.localStorage.getItem(storageKey);
+
+        if (!raw) {
+            return defaultItems;
+        }
+
+        const parsed = JSON.parse(raw) as { items?: Item[] };
+
+        return Array.isArray(parsed.items) &&
+            parsed.items.every((item) =>
+                typeof item?.id === 'number' &&
+                typeof item?.title === 'string' &&
+                isStatus(item?.status),
+            )
+            ? parsed.items
+            : defaultItems;
+    } catch {
+        return defaultItems;
+    }
+}
+
+export default function Roadmap() {
+    const [initialItems] = useState(readRoadmapData);
+    const [items, setItems] = useState<Item[]>(initialItems);
     const [open, setOpen] = useState(false);
     const [editing, setEditing] = useState<Item | null>(null);
 
+    useEffect(() => {
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        try {
+            window.localStorage.setItem(storageKey, JSON.stringify({ items }));
+        } catch {
+            return;
+        }
+    }, [items]);
+
+    const handleClose = () => {
+        setOpen(false);
+        setEditing(null);
+    };
+
     const handleSubmit = (title: string, status: Item['status']) => {
         if (editing) {
-            router.put(`/roadmap/${editing.id}`, { title, status });
+            setItems((current) =>
+                current.map((item) =>
+                    item.id === editing.id ? { ...item, title, status } : item,
+                ),
+            );
 
             return;
         }
 
-        router.post('/roadmap', { title, status });
+        setItems((current) => [
+            {
+                id: createId(),
+                title,
+                status,
+            },
+            ...current,
+        ]);
     };
 
     const handleDelete = (id: number) => {
-        router.delete(`/roadmap/${id}`);
+        setItems((current) => current.filter((item) => item.id !== id));
     };
 
-    const handleDragEnd = (event: any) => {
+    const handleDragEnd = (event: DragEndEvent) => {
         const { over, active } = event;
 
         if (!over) {
-return;
-}
+            return;
+        }
 
-        const item = items.find(i => i.id === active.id);
+        setItems((current) =>
+            current.map((item) => {
+                if (item.id !== active.id) {
+                    return item;
+                }
 
-        if (!item) {
-return;
-}
+                const nextStatus = isStatus(over.id)
+                    ? over.id
+                    : current.find((candidate) => candidate.id === over.id)?.status;
 
-        router.put(`/roadmap/${active.id}`, {
-            title: item.title,
-            status: over.id,
-        });
+                return nextStatus ? { ...item, status: nextStatus } : item;
+            }),
+        );
     };
 
-    const nowItems = items.filter(i => i.status === 'now');
-    const nextItems = items.filter(i => i.status === 'next');
-    const laterItems = items.filter(i => i.status === 'later');
+    const nowItems = items.filter((item) => item.status === 'now');
+    const nextItems = items.filter((item) => item.status === 'next');
+    const laterItems = items.filter((item) => item.status === 'later');
 
     return (
-        <AppShell>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Roadmap" />
 
             <RoadmapShell>
-
                 <div className="mb-4 flex justify-end">
                     <button
-                        onClick={() => setOpen(true)}
+                        onClick={() => {
+                            setEditing(null);
+                            setOpen(true);
+                        }}
                         className="rounded bg-sky-500 px-4 py-2 text-white"
                     >
                         + New
@@ -80,28 +204,46 @@ return;
 
                 <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                     <div className="grid gap-4 md:grid-cols-3">
-
-                        <Column id="now" title="Now" items={nowItems} onEdit={setEditing} onOpen={setOpen} onDelete={handleDelete}/>
-                        <Column id="next" title="Next" items={nextItems} onEdit={setEditing} onOpen={setOpen} onDelete={handleDelete}/>
-                        <Column id="later" title="Later" items={laterItems} onEdit={setEditing} onOpen={setOpen} onDelete={handleDelete}/>
-
+                        <Column
+                            id="now"
+                            title="Now"
+                            items={nowItems}
+                            onEdit={(item) => setEditing(item)}
+                            onOpen={setOpen}
+                            onDelete={handleDelete}
+                        />
+                        <Column
+                            id="next"
+                            title="Next"
+                            items={nextItems}
+                            onEdit={(item) => setEditing(item)}
+                            onOpen={setOpen}
+                            onDelete={handleDelete}
+                        />
+                        <Column
+                            id="later"
+                            title="Later"
+                            items={laterItems}
+                            onEdit={(item) => setEditing(item)}
+                            onOpen={setOpen}
+                            onDelete={handleDelete}
+                        />
                     </div>
                 </DndContext>
 
-<RoadmapDialog
-    key={editing?.id ?? 'new'}
-    open={open}
-    onClose={close}
-    initial={editing}
-    onSubmit={handleSubmit}
-/>
-
+                <RoadmapDialog
+                    key={`${editing?.id ?? 'new'}-${open ? 'open' : 'closed'}`}
+                    open={open}
+                    onClose={handleClose}
+                    initial={editing}
+                    onSubmit={handleSubmit}
+                />
             </RoadmapShell>
-        </AppShell>
+        </AppLayout>
     );
 }
 
-function Column({ id, title, items, onEdit, onOpen, onDelete }: any) {
+function Column({ id, title, items, onEdit, onOpen, onDelete }: ColumnProps) {
     const { setNodeRef } = useDroppable({ id });
 
     return (
@@ -110,9 +252,12 @@ function Column({ id, title, items, onEdit, onOpen, onDelete }: any) {
                 {title} ({items.length})
             </h2>
 
-            <SortableContext items={items} strategy={verticalListSortingStrategy}>
+            <SortableContext
+                items={items.map((item) => item.id)}
+                strategy={verticalListSortingStrategy}
+            >
                 <div className="space-y-2">
-                    {items.map((item: any) => (
+                    {items.map((item) => (
                         <Card
                             key={item.id}
                             item={item}
@@ -129,7 +274,7 @@ function Column({ id, title, items, onEdit, onOpen, onDelete }: any) {
     );
 }
 
-function Card({ item, onEdit, onDelete }: any) {
+function Card({ item, onEdit, onDelete }: CardProps) {
     const {
         attributes,
         listeners,
@@ -147,23 +292,22 @@ function Card({ item, onEdit, onDelete }: any) {
         <div
             ref={setNodeRef}
             style={style}
-            className="rounded-lg border p-3 bg-white shadow-sm"
+            className="rounded-lg border bg-white p-3 shadow-sm"
         >
-            {/* 🔥 DRAG HANDLE */}
             <div
                 {...attributes}
                 {...listeners}
-                className="cursor-grab mb-2 text-xs text-gray-400"
+                className="mb-2 cursor-grab text-xs text-gray-400"
             >
-                ⠿ drag
+                Drag
             </div>
 
             <p className="text-sm font-medium">{item.title}</p>
 
             <div className="mt-2 flex justify-end gap-2">
                 <button
-                    onClick={(e) => {
-                        e.stopPropagation();
+                    onClick={(event) => {
+                        event.stopPropagation();
                         onEdit();
                     }}
                     className="text-xs text-blue-500"
@@ -172,8 +316,8 @@ function Card({ item, onEdit, onDelete }: any) {
                 </button>
 
                 <button
-                    onClick={(e) => {
-                        e.stopPropagation();
+                    onClick={(event) => {
+                        event.stopPropagation();
                         onDelete();
                     }}
                     className="text-xs text-red-500"

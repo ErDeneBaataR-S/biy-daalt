@@ -17,7 +17,9 @@ export function RoadmapDialog({ open, onClose, onSubmit, initial }: Props) {
     const [title, setTitle] = useState(initial?.title ?? '');
     const [status, setStatus] = useState<Status>(initial?.status ?? 'now');
 
-    if (!open) return null;
+    if (!open) {
+        return null;
+    }
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -48,7 +50,9 @@ export function RoadmapDialog({ open, onClose, onSubmit, initial }: Props) {
 
                     <button
                         onClick={() => {
-                            if (!title.trim()) return;
+                            if (!title.trim()) {
+                                return;
+                            }
 
                             onSubmit(title, status);
                             onClose();
