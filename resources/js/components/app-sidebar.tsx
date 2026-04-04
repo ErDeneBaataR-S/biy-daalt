@@ -32,9 +32,8 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Roadmap',
-        href: '#roadmap',
+        href: '/roadmap',
         icon: Sparkles,
-        disabled: true,
     },
     {
         title: 'Backlog',
