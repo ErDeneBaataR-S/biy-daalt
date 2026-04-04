@@ -88,15 +88,13 @@ return;
                     </div>
                 </DndContext>
 
-                <RoadmapDialog
-                    open={open}
-                    onClose={() => {
-                        setOpen(false);
-                        setEditing(null);
-                    }}
-                    initial={editing}
-                    onSubmit={handleSubmit}
-                />
+<RoadmapDialog
+    key={editing?.id ?? 'new'}
+    open={open}
+    onClose={close}
+    initial={editing}
+    onSubmit={handleSubmit}
+/>
 
             </RoadmapShell>
         </AppShell>

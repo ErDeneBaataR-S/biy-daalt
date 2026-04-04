@@ -1,33 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+
+type Status = 'now' | 'next' | 'later';
 
 type Props = {
     open: boolean;
     onClose: () => void;
-    onSubmit: (title: string, status: 'now' | 'next' | 'later') => void;
+    onSubmit: (title: string, status: Status) => void;
     initial?: {
         id: number;
         title: string;
-        status: 'now' | 'next' | 'later';
+        status: Status;
     } | null;
 };
 
 export function RoadmapDialog({ open, onClose, onSubmit, initial }: Props) {
-    const [title, setTitle] = useState('');
-    const [status, setStatus] = useState<'now' | 'next' | 'later'>('now');
+    const [title, setTitle] = useState(initial?.title ?? '');
+    const [status, setStatus] = useState<Status>(initial?.status ?? 'now');
 
-    useEffect(() => {
-        if (initial) {
-            setTitle(initial.title);
-            setStatus(initial.status);
-        } else {
-            setTitle('');
-            setStatus('now');
-        }
-    }, [initial, open]);
-
-    if (!open) {
-return null;
-}
+    if (!open) return null;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -46,9 +36,7 @@ return null;
                 <select
                     className="mb-4 w-full rounded border p-2"
                     value={status}
-                    onChange={(e) =>
-                        setStatus(e.target.value as 'now' | 'next' | 'later')
-                    }
+                    onChange={(e) => setStatus(e.target.value as Status)}
                 >
                     <option value="now">Now</option>
                     <option value="next">Next</option>
@@ -60,14 +48,9 @@ return null;
 
                     <button
                         onClick={() => {
-                            if (!title.trim()) {
-return;
-} 
+                            if (!title.trim()) return;
 
-                            onSubmit(
-                                title,
-                                status || initial?.status || 'now'
-                            );
+                            onSubmit(title, status);
                             onClose();
                         }}
                         className="rounded bg-blue-500 px-4 py-1 text-white"
