@@ -1,61 +1,70 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
+import {
+    createDefaultFeedback,
+    FEEDBACK_STORAGE_KEY,
+    feedbackPriorityOptions,
+    feedbackStatusOptions,
+    getFeedbackPriorityColor,
+    isDeadlineOverdue,
+    loadFeedbacks,
+} from '@/pages/feedback-state';
+
+type FeedbackItem = {
+    id: number;
+    title: string;
+    description: string;
+    status: string;
+    priority: string;
+    deadline: string;
+};
 
 export default function Feedback() {
-    const [feedbacks, setFeedbacks] = useState<any[]>([]);
-    const [editingId, setEditingId] = useState<number | null>(null);
+    const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>(() => {
+        if (typeof window === 'undefined') {
+            return [];
+        }
+
+        return loadFeedbacks(window.localStorage.getItem(FEEDBACK_STORAGE_KEY));
+    });
 
     useEffect(() => {
-        const data = localStorage.getItem('feedbacks');
-        if (data) setFeedbacks(JSON.parse(data));
-    }, []);
+        if (typeof window === 'undefined') {
+            return;
+        }
 
-    useEffect(() => {
-        localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
+        window.localStorage.setItem(
+            FEEDBACK_STORAGE_KEY,
+            JSON.stringify(feedbacks),
+        );
     }, [feedbacks]);
 
     const addFeedback = () => {
-        setFeedbacks([
-            ...feedbacks,
-            {
-                id: Date.now(),
-                title: 'Login issue',
-                description: 'User cannot login properly',
-                status: 'Open',
-                priority: 'Medium',
-                deadline: new Date().toISOString().split('T')[0],
-            },
-        ]);
+        setFeedbacks((current) => [...current, createDefaultFeedback()]);
     };
 
     const deleteFeedback = (id: number) => {
-        setFeedbacks(feedbacks.filter((f) => f.id !== id));
+        setFeedbacks((current) => current.filter((feedback) => feedback.id !== id));
     };
 
-    const updateFeedback = (id: number, updated: any) => {
-        setFeedbacks(
-            feedbacks.map((f) => (f.id === id ? { ...f, ...updated } : f)),
+    const updateFeedback = (
+        id: number,
+        updated: Partial<Pick<FeedbackItem, 'status' | 'priority'>>,
+    ) => {
+        setFeedbacks((current) =>
+            current.map((feedback) =>
+                feedback.id === id ? { ...feedback, ...updated } : feedback,
+            ),
         );
     };
 
-    const isOverdue = (date: string) => {
-        return new Date(date) < new Date();
-    };
-
-    const getPriorityColor = (priority: string) => {
-        if (priority === 'Low') return 'bg-gray-100 text-gray-600';
-        if (priority === 'Medium') return 'bg-yellow-100 text-yellow-600';
-        if (priority === 'High') return 'bg-red-100 text-red-600';
-        return '';
-    };
-
-    const openItems = feedbacks.filter((f) => f.status === 'Open');
-    const reviewItems = feedbacks.filter((f) => f.status === 'In Review');
-    const closedItems = feedbacks.filter((f) => f.status === 'Closed');
+    const columns = feedbackStatusOptions.map((status) => ({
+        status,
+        items: feedbacks.filter((feedback) => feedback.status === status),
+    }));
 
     return (
         <AppLayout>
-            {' '}
             <div className="p-6">
                 <div className="mb-6 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Feedback</h1>
@@ -67,106 +76,89 @@ export default function Feedback() {
                     </button>
                 </div>
 
-                <div className="grid grid-cols-3 gap-6">
-                    {/* OPEN */}
-                    <div className="rounded-xl bg-white p-4 shadow-sm">
-                        <h2 className="mb-3 font-semibold">
-                            Open ({openItems.length})
-                        </h2>
+                <div className="grid gap-6 md:grid-cols-3">
+                    {columns.map((column) => (
+                        <div
+                            key={column.status}
+                            className="rounded-xl bg-white p-4 shadow-sm"
+                        >
+                            <h2 className="mb-3 font-semibold">
+                                {column.status} ({column.items.length})
+                            </h2>
 
-                        {openItems.map((f) => (
+                            {column.items.map((feedback) => (
                             <div
-                                key={f.id}
+                                key={feedback.id}
                                 className="mb-3 rounded-lg border p-3"
                             >
-                                <h3 className="font-medium">{f.title}</h3>
+                                <h3 className="font-medium">
+                                    {feedback.title}
+                                </h3>
                                 <p className="text-sm text-gray-500">
-                                    {f.description}
+                                    {feedback.description}
                                 </p>
 
                                 <span
-                                    className={`rounded px-2 py-1 text-xs ${getPriorityColor(f.priority)}`}
+                                    className={`rounded px-2 py-1 text-xs ${getFeedbackPriorityColor(feedback.priority)}`}
                                 >
-                                    {f.priority}
+                                    {feedback.priority}
                                 </span>
 
                                 <p
-                                    className={`mt-1 text-xs ${isOverdue(f.deadline) ? 'font-semibold text-red-500' : 'text-gray-400'}`}
+                                    className={`mt-1 text-xs ${isDeadlineOverdue(feedback.deadline) ? 'font-semibold text-red-500' : 'text-gray-400'}`}
                                 >
-                                    📅 {f.deadline}
+                                    Deadline: {feedback.deadline}
                                 </p>
 
                                 <div className="mt-2 flex justify-end gap-2">
                                     <select
-                                        value={f.status}
+                                        value={feedback.status}
                                         onChange={(e) =>
-                                            updateFeedback(f.id, {
+                                            updateFeedback(feedback.id, {
                                                 status: e.target.value,
                                             })
                                         }
                                         className="rounded border px-2 py-1 text-sm"
                                     >
-                                        <option>Open</option>
-                                        <option>In Review</option>
-                                        <option>Closed</option>
+                                        {feedbackStatusOptions.map((status) => (
+                                            <option key={status}>
+                                                {status}
+                                            </option>
+                                        ))}
                                     </select>
 
                                     <select
-                                        value={f.priority}
+                                        value={feedback.priority}
                                         onChange={(e) =>
-                                            updateFeedback(f.id, {
+                                            updateFeedback(feedback.id, {
                                                 priority: e.target.value,
                                             })
                                         }
                                         className="rounded border px-2 py-1 text-sm"
                                     >
-                                        <option>Low</option>
-                                        <option>Medium</option>
-                                        <option>High</option>
+                                        {feedbackPriorityOptions.map(
+                                            (priority) => (
+                                                <option key={priority}>
+                                                    {priority}
+                                                </option>
+                                            ),
+                                        )}
                                     </select>
 
                                     <button
-                                        onClick={() => deleteFeedback(f.id)}
+                                        onClick={() =>
+                                            deleteFeedback(feedback.id)
+                                        }
                                         className="text-red-500"
+                                        aria-label={`Delete ${feedback.title}`}
                                     >
-                                        🗑
+                                        Delete
                                     </button>
                                 </div>
                             </div>
                         ))}
-                    </div>
-
-                    {/* REVIEW */}
-                    <div className="rounded-xl bg-white p-4 shadow-sm">
-                        <h2 className="mb-3 font-semibold">
-                            In Review ({reviewItems.length})
-                        </h2>
-
-                        {reviewItems.map((f) => (
-                            <div
-                                key={f.id}
-                                className="mb-3 rounded-lg border p-3"
-                            >
-                                <h3>{f.title}</h3>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* CLOSED */}
-                    <div className="rounded-xl bg-white p-4 shadow-sm">
-                        <h2 className="mb-3 font-semibold">
-                            Closed ({closedItems.length})
-                        </h2>
-
-                        {closedItems.map((f) => (
-                            <div
-                                key={f.id}
-                                className="mb-3 rounded-lg border p-3"
-                            >
-                                <h3>{f.title}</h3>
-                            </div>
-                        ))}
-                    </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </AppLayout>

@@ -1,69 +1,72 @@
+import { useEffect, useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
-import { useState, useEffect } from 'react';
+import {
+    createRelease,
+    loadReleases,
+    RELEASES_STORAGE_KEY,
+} from '@/pages/releases-state';
+
+type ReleaseItem = {
+    id: number;
+    version: string;
+    date: string;
+    features: string[];
+};
 
 export default function Releases() {
-    const [releases, setReleases] = useState<any[]>([]);
+    const [releases, setReleases] = useState<ReleaseItem[]>(() => {
+        if (typeof window === 'undefined') {
+            return loadReleases(null);
+        }
+
+        return loadReleases(window.localStorage.getItem(RELEASES_STORAGE_KEY));
+    });
     const [newVersion, setNewVersion] = useState('');
 
-    // LOAD
     useEffect(() => {
-        const data = localStorage.getItem('releases');
-        if (data) {
-            setReleases(JSON.parse(data));
-        } else {
-            setReleases([
-                {
-                    id: Date.now(),
-                    version: 'v1.0',
-                    date: '2026-04-01',
-                    features: ['Login system', 'Dashboard', 'Feedback module'],
-                },
-            ]);
+        if (typeof window === 'undefined') {
+            return;
         }
-    }, []);
 
-    // SAVE
-    useEffect(() => {
-        localStorage.setItem('releases', JSON.stringify(releases));
+        window.localStorage.setItem(
+            RELEASES_STORAGE_KEY,
+            JSON.stringify(releases),
+        );
     }, [releases]);
 
-    // ADD RELEASE
     const addRelease = () => {
-        if (!newVersion) return;
-        setReleases([
-            ...releases,
-            {
-                id: Date.now(),
-                version: newVersion,
-                date: new Date().toISOString().split('T')[0],
-                features: [],
-            },
-        ]);
+        if (!newVersion.trim()) {
+            return;
+        }
+
+        setReleases((current) => [...current, createRelease(newVersion)]);
 
         setNewVersion('');
     };
 
-    // DELETE RELEASE
     const deleteRelease = (id: number) => {
-        setReleases(releases.filter((r) => r.id !== id));
+        setReleases((current) => current.filter((release) => release.id !== id));
     };
 
-    // ADD FEATURE
     const addFeature = (id: number) => {
-        const text = prompt('Feature name?');
-        if (!text) return;
-        setReleases(
-            releases.map((r) =>
-                r.id === id ? { ...r, features: [...r.features, text] } : r,
+        const text = prompt('Feature name?')?.trim();
+
+        if (!text) {
+            return;
+        }
+
+        setReleases((current) =>
+            current.map((release) =>
+                release.id === id
+                    ? { ...release, features: [...release.features, text] }
+                    : release,
             ),
         );
     };
 
     return (
         <AppLayout>
-            {' '}
             <div className="p-6">
-                {/* HEADER */}
                 <div className="mb-6 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Releases</h1>
 
@@ -84,7 +87,6 @@ export default function Releases() {
                     </div>
                 </div>
 
-                {/* EMPTY */}
                 {releases.length === 0 ? (
                     <div className="mt-20 text-center text-gray-400">
                         No releases yet
@@ -109,13 +111,13 @@ export default function Releases() {
                                         <button
                                             onClick={() => deleteRelease(r.id)}
                                             className="text-red-500"
+                                            aria-label={`Delete ${r.version}`}
                                         >
-                                            🗑
+                                            Delete
                                         </button>
                                     </div>
                                 </div>
 
-                                {/* FEATURES */}
                                 <ul className="space-y-1 text-sm">
                                     {r.features.length === 0 ? (
                                         <li className="text-gray-400">
@@ -130,7 +132,6 @@ export default function Releases() {
                                     )}
                                 </ul>
 
-                                {/* ADD FEATURE */}
                                 <button
                                     onClick={() => addFeature(r.id)}
                                     className="mt-3 rounded bg-blue-100 px-2 py-1 text-xs"
