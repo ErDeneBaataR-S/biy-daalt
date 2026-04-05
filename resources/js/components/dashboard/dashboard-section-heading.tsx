@@ -15,7 +15,9 @@ export function DashboardSectionHeading({
     className,
 }: DashboardSectionHeadingProps) {
     return (
-        <div className={cn('flex items-start justify-between gap-4', className)}>
+        <div
+            className={cn('flex items-start justify-between gap-4', className)}
+        >
             <div>
                 <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
                     {title}

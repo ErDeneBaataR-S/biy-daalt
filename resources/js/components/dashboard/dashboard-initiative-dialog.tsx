@@ -9,7 +9,11 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import type { Initiative, InitiativeDraft, InitiativeStatus } from '@/types/dashboard';
+import type {
+    Initiative,
+    InitiativeDraft,
+    InitiativeStatus,
+} from '@/types/dashboard';
 
 const defaultInitiative: InitiativeDraft = {
     title: '',
@@ -18,7 +22,9 @@ const defaultInitiative: InitiativeDraft = {
     completed: false,
 };
 
-function getInitialInitiativeForm(initiative?: Initiative | null): InitiativeDraft {
+function getInitialInitiativeForm(
+    initiative?: Initiative | null,
+): InitiativeDraft {
     if (!initiative) {
         return defaultInitiative;
     }
@@ -62,17 +68,22 @@ export function DashboardInitiativeDialog({
                 <div className="border-b border-slate-200/80 px-6 py-5">
                     <DialogHeader>
                         <DialogTitle className="text-xl text-slate-900">
-                            {initiative ? 'Edit initiative' : 'Create initiative'}
+                            {initiative
+                                ? 'Edit initiative'
+                                : 'Create initiative'}
                         </DialogTitle>
                         <DialogDescription className="text-sm text-slate-500">
-                            Track dashboard initiatives in the frontend until the backend is ready.
+                            Track dashboard initiatives in the frontend until
+                            the backend is ready.
                         </DialogDescription>
                     </DialogHeader>
                 </div>
 
                 <div className="grid gap-4 px-6 py-5">
                     <label className="grid gap-2">
-                        <span className="text-sm font-medium text-slate-700">Title</span>
+                        <span className="text-sm font-medium text-slate-700">
+                            Title
+                        </span>
                         <Input
                             value={form.title}
                             onChange={(event) =>
@@ -86,7 +97,9 @@ export function DashboardInitiativeDialog({
                     </label>
 
                     <label className="grid gap-2">
-                        <span className="text-sm font-medium text-slate-700">Owner</span>
+                        <span className="text-sm font-medium text-slate-700">
+                            Owner
+                        </span>
                         <Input
                             value={form.owner}
                             onChange={(event) =>
@@ -100,17 +113,21 @@ export function DashboardInitiativeDialog({
                     </label>
 
                     <label className="grid gap-2">
-                        <span className="text-sm font-medium text-slate-700">Status</span>
+                        <span className="text-sm font-medium text-slate-700">
+                            Status
+                        </span>
                         <select
                             value={form.status}
                             onChange={(event) =>
                                 setForm((current) => ({
                                     ...current,
-                                    status: event.target.value as InitiativeStatus,
-                                    completed: event.target.value === 'completed',
+                                    status: event.target
+                                        .value as InitiativeStatus,
+                                    completed:
+                                        event.target.value === 'completed',
                                 }))
                             }
-                            className="flex h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-xs outline-none transition focus-visible:border-sky-400"
+                            className="flex h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-xs transition outline-none focus-visible:border-sky-400"
                         >
                             <option value="planned">Planned</option>
                             <option value="on-track">On track</option>
@@ -121,7 +138,10 @@ export function DashboardInitiativeDialog({
                 </div>
 
                 <DialogFooter className="border-t border-slate-200/80 px-6 py-5">
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
+                    <Button
+                        variant="outline"
+                        onClick={() => onOpenChange(false)}
+                    >
                         Cancel
                     </Button>
                     <Button

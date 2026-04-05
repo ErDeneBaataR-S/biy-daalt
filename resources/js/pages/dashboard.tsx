@@ -70,7 +70,8 @@ const defaultReleases: Release[] = [
         version: 'v2.6',
         targetDate: '2026-04-04',
         status: 'planned',
-        summary: 'Updated shell polish, cleaner navigation, and faster entry points.',
+        summary:
+            'Updated shell polish, cleaner navigation, and faster entry points.',
     },
     {
         id: 'release-2',
@@ -83,7 +84,10 @@ const defaultReleases: Release[] = [
 ];
 
 function generateId(prefix: string) {
-    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    if (
+        typeof crypto !== 'undefined' &&
+        typeof crypto.randomUUID === 'function'
+    ) {
         return `${prefix}-${crypto.randomUUID()}`;
     }
 
@@ -174,11 +178,13 @@ export default function Dashboard() {
     const [{ initiatives: initialInitiatives, releases: initialReleases }] =
         useState(readDashboardData);
     const [searchValue, setSearchValue] = useState('');
-    const [initiatives, setInitiatives] = useState<Initiative[]>(initialInitiatives);
+    const [initiatives, setInitiatives] =
+        useState<Initiative[]>(initialInitiatives);
     const [releases, setReleases] = useState<Release[]>(initialReleases);
     const [initiativeDialogOpen, setInitiativeDialogOpen] = useState(false);
     const [releaseDialogOpen, setReleaseDialogOpen] = useState(false);
-    const [editingInitiative, setEditingInitiative] = useState<Initiative | null>(null);
+    const [editingInitiative, setEditingInitiative] =
+        useState<Initiative | null>(null);
     const [editingRelease, setEditingRelease] = useState<Release | null>(null);
 
     useEffect(() => {
@@ -202,8 +208,8 @@ export default function Dashboard() {
             return true;
         }
 
-        return [initiative.title, initiative.owner, initiative.status].some((value) =>
-            value.toLowerCase().includes(normalizedQuery),
+        return [initiative.title, initiative.owner, initiative.status].some(
+            (value) => value.toLowerCase().includes(normalizedQuery),
         );
     });
     const filteredReleases = releases.filter((release) => {
@@ -220,7 +226,9 @@ export default function Dashboard() {
         ].some((value) => value.toLowerCase().includes(normalizedQuery));
     });
 
-    const activeInitiatives = initiatives.filter((initiative) => !initiative.completed).length;
+    const activeInitiatives = initiatives.filter(
+        (initiative) => !initiative.completed,
+    ).length;
     const healthyInitiatives = initiatives.filter(
         (initiative) => initiative.status !== 'at-risk',
     ).length;
@@ -345,7 +353,7 @@ export default function Dashboard() {
                 }}
             >
                 <section>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-500">
+                    <p className="text-xs font-semibold tracking-[0.18em] text-sky-500 uppercase">
                         Product workspace
                     </p>
                     <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
@@ -354,16 +362,21 @@ export default function Dashboard() {
                                 Dashboard
                             </h1>
                             <p className="mt-1 text-sm text-slate-500">
-                                Frontend-only overview with local CRUD for initiatives and releases.
+                                Frontend-only overview with local CRUD for
+                                initiatives and releases.
                             </p>
                         </div>
                         <div className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-500">
-                            {filteredInitiatives.length} initiatives • {filteredReleases.length} releases
+                            {filteredInitiatives.length} initiatives •{' '}
+                            {filteredReleases.length} releases
                         </div>
                     </div>
                     <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                         {metrics.map((metric) => (
-                            <DashboardMetricCard key={metric.label} {...metric} />
+                            <DashboardMetricCard
+                                key={metric.label}
+                                {...metric}
+                            />
                         ))}
                     </div>
                 </section>
@@ -402,21 +415,22 @@ export default function Dashboard() {
                                             <Checkbox
                                                 checked={initiative.completed}
                                                 onCheckedChange={(checked) => {
-                                                    const completed = checked === true;
+                                                    const completed =
+                                                        checked === true;
 
                                                     setInitiatives((current) =>
                                                         current.map((item) =>
-                                                            item.id === initiative.id
+                                                            item.id ===
+                                                            initiative.id
                                                                 ? {
                                                                       ...item,
                                                                       completed,
-                                                                      status:
-                                                                          completed
-                                                                              ? 'completed'
-                                                                              : item.status ===
-                                                                                  'completed'
-                                                                                ? 'on-track'
-                                                                                : item.status,
+                                                                      status: completed
+                                                                          ? 'completed'
+                                                                          : item.status ===
+                                                                              'completed'
+                                                                            ? 'on-track'
+                                                                            : item.status,
                                                                   }
                                                                 : item,
                                                         ),
@@ -434,7 +448,9 @@ export default function Dashboard() {
                                                         variant="outline"
                                                         className={`rounded-full border px-2.5 py-0.5 text-[0.68rem] font-semibold capitalize ${getInitiativeTone(initiative.status)}`}
                                                     >
-                                                        {formatStatusLabel(initiative.status)}
+                                                        {formatStatusLabel(
+                                                            initiative.status,
+                                                        )}
                                                     </Badge>
                                                 </div>
                                                 <p className="mt-1 text-sm text-slate-500">
@@ -447,8 +463,12 @@ export default function Dashboard() {
                                                     size="icon"
                                                     className="size-8 rounded-lg text-slate-400 hover:bg-white hover:text-slate-700"
                                                     onClick={() => {
-                                                        setEditingInitiative(initiative);
-                                                        setInitiativeDialogOpen(true);
+                                                        setEditingInitiative(
+                                                            initiative,
+                                                        );
+                                                        setInitiativeDialogOpen(
+                                                            true,
+                                                        );
                                                     }}
                                                 >
                                                     <PencilLine className="size-4" />
@@ -458,10 +478,13 @@ export default function Dashboard() {
                                                     size="icon"
                                                     className="size-8 rounded-lg text-slate-400 hover:bg-white hover:text-rose-500"
                                                     onClick={() =>
-                                                        setInitiatives((current) =>
-                                                            current.filter(
-                                                                (item) => item.id !== initiative.id,
-                                                            ),
+                                                        setInitiatives(
+                                                            (current) =>
+                                                                current.filter(
+                                                                    (item) =>
+                                                                        item.id !==
+                                                                        initiative.id,
+                                                                ),
                                                         )
                                                     }
                                                 >
@@ -515,11 +538,16 @@ export default function Dashboard() {
                                                             variant="outline"
                                                             className={`rounded-full border px-2.5 py-0.5 text-[0.68rem] font-semibold capitalize ${getReleaseTone(release.status)}`}
                                                         >
-                                                            {formatStatusLabel(release.status)}
+                                                            {formatStatusLabel(
+                                                                release.status,
+                                                            )}
                                                         </Badge>
                                                     </div>
                                                     <p className="mt-1 text-sm text-slate-500">
-                                                        {release.version} • {formatReleaseDate(release.targetDate)}
+                                                        {release.version} •{' '}
+                                                        {formatReleaseDate(
+                                                            release.targetDate,
+                                                        )}
                                                     </p>
                                                 </div>
                                                 <div className="flex items-center gap-1">
@@ -528,8 +556,12 @@ export default function Dashboard() {
                                                         size="icon"
                                                         className="size-8 rounded-lg text-slate-400 hover:bg-white hover:text-slate-700"
                                                         onClick={() => {
-                                                            setEditingRelease(release);
-                                                            setReleaseDialogOpen(true);
+                                                            setEditingRelease(
+                                                                release,
+                                                            );
+                                                            setReleaseDialogOpen(
+                                                                true,
+                                                            );
                                                         }}
                                                     >
                                                         <PencilLine className="size-4" />
@@ -539,10 +571,15 @@ export default function Dashboard() {
                                                         size="icon"
                                                         className="size-8 rounded-lg text-slate-400 hover:bg-white hover:text-rose-500"
                                                         onClick={() =>
-                                                            setReleases((current) =>
-                                                                current.filter(
-                                                                    (item) => item.id !== release.id,
-                                                                ),
+                                                            setReleases(
+                                                                (current) =>
+                                                                    current.filter(
+                                                                        (
+                                                                            item,
+                                                                        ) =>
+                                                                            item.id !==
+                                                                            release.id,
+                                                                    ),
                                                             )
                                                         }
                                                     >
@@ -562,7 +599,9 @@ export default function Dashboard() {
                         <DashboardPanel
                             title="My Work"
                             description="Quick signals to keep the right side of the layout aligned with the reference."
-                            action={<BellRing className="size-4 text-slate-400" />}
+                            action={
+                                <BellRing className="size-4 text-slate-400" />
+                            }
                         >
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between rounded-[1.1rem] border border-slate-200 bg-slate-50/80 px-4 py-3">
@@ -571,7 +610,8 @@ export default function Dashboard() {
                                             Local storage sync
                                         </p>
                                         <p className="mt-1 text-sm text-slate-500">
-                                            Dashboard data persists after refresh.
+                                            Dashboard data persists after
+                                            refresh.
                                         </p>
                                     </div>
                                     <Badge
@@ -587,7 +627,8 @@ export default function Dashboard() {
                                             Backend handoff
                                         </p>
                                         <p className="mt-1 text-sm text-slate-500">
-                                            IDs are dynamic in React and can map to Laravel later.
+                                            IDs are dynamic in React and can map
+                                            to Laravel later.
                                         </p>
                                     </div>
                                     <Badge

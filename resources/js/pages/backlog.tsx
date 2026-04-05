@@ -84,7 +84,10 @@ const defaultItems: BacklogItem[] = [
 ];
 
 function createId() {
-    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    if (
+        typeof crypto !== 'undefined' &&
+        typeof crypto.randomUUID === 'function'
+    ) {
         return crypto.randomUUID();
     }
 
@@ -136,9 +139,14 @@ function readBacklogData() {
         };
 
         return {
-            items: Array.isArray(parsed.items) ? sortItems(parsed.items) : defaultItems,
+            items: Array.isArray(parsed.items)
+                ? sortItems(parsed.items)
+                : defaultItems,
             activeFilterId:
-                parsed.activeFilterId && defaultFilters.some((filter) => filter.id === parsed.activeFilterId)
+                parsed.activeFilterId &&
+                defaultFilters.some(
+                    (filter) => filter.id === parsed.activeFilterId,
+                )
                     ? parsed.activeFilterId
                     : ('all' as BacklogFilterId),
         };
@@ -190,7 +198,9 @@ export default function Backlog() {
 
     useEffect(() => {
         setSelectedIds((current) =>
-            current.filter((id) => filteredItems.some((item) => item.id === id)),
+            current.filter((id) =>
+                filteredItems.some((item) => item.id === id),
+            ),
         );
     }, [filteredItems]);
 
@@ -199,7 +209,9 @@ export default function Backlog() {
             setItems((current) =>
                 sortItems(
                     current.map((item) =>
-                        item.id === editingItem.id ? { ...item, ...draft } : item,
+                        item.id === editingItem.id
+                            ? { ...item, ...draft }
+                            : item,
                     ),
                 ),
             );
@@ -227,20 +239,28 @@ export default function Backlog() {
 
     const handleDelete = (id: string) => {
         setItems((current) =>
-            sortItems(current.filter((item) => item.id !== id)).map((item, index) => ({
-                ...item,
-                position: index + 1,
-            })),
+            sortItems(current.filter((item) => item.id !== id)).map(
+                (item, index) => ({
+                    ...item,
+                    position: index + 1,
+                }),
+            ),
         );
-        setSelectedIds((current) => current.filter((selectedId) => selectedId !== id));
+        setSelectedIds((current) =>
+            current.filter((selectedId) => selectedId !== id),
+        );
     };
 
     const handleReorder = (fromId: string, toId: string) => {
         setItems((current) => {
             const ordered = sortItems(current);
             const visibleIds = filteredItems.map((item) => item.id);
-            const visibleItems = ordered.filter((item) => visibleIds.includes(item.id));
-            const fromIndex = visibleItems.findIndex((item) => item.id === fromId);
+            const visibleItems = ordered.filter((item) =>
+                visibleIds.includes(item.id),
+            );
+            const fromIndex = visibleItems.findIndex(
+                (item) => item.id === fromId,
+            );
             const toIndex = visibleItems.findIndex((item) => item.id === toId);
 
             if (fromIndex === -1 || toIndex === -1) {
@@ -253,7 +273,9 @@ export default function Backlog() {
 
             let visibleCursor = 0;
             const merged = ordered.map((item) =>
-                visibleIds.includes(item.id) ? reorderedVisible[visibleCursor++] : item,
+                visibleIds.includes(item.id)
+                    ? reorderedVisible[visibleCursor++]
+                    : item,
             );
 
             return merged.map((item, index) => ({
@@ -290,20 +312,30 @@ export default function Backlog() {
                         onToggleSelect={(id) =>
                             setSelectedIds((current) =>
                                 current.includes(id)
-                                    ? current.filter((selectedId) => selectedId !== id)
+                                    ? current.filter(
+                                          (selectedId) => selectedId !== id,
+                                      )
                                     : [...current, id],
                             )
                         }
                         onToggleSelectAll={() => {
-                            const visibleIds = filteredItems.map((item) => item.id);
+                            const visibleIds = filteredItems.map(
+                                (item) => item.id,
+                            );
                             const allSelected =
                                 visibleIds.length > 0 &&
-                                visibleIds.every((id) => selectedIds.includes(id));
+                                visibleIds.every((id) =>
+                                    selectedIds.includes(id),
+                                );
 
                             setSelectedIds((current) =>
                                 allSelected
-                                    ? current.filter((id) => !visibleIds.includes(id))
-                                    : Array.from(new Set([...current, ...visibleIds])),
+                                    ? current.filter(
+                                          (id) => !visibleIds.includes(id),
+                                      )
+                                    : Array.from(
+                                          new Set([...current, ...visibleIds]),
+                                      ),
                             );
                         }}
                         onEdit={(item) => {

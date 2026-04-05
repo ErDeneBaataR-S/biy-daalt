@@ -40,27 +40,27 @@ const mainNavItems: NavItem[] = [
         href: backlog(),
         icon: ListTodo,
     },
-{
-title: 'Feedback',
-href: '/feedback',
-icon: MessageSquareMore,
-},
-     {
-  title: 'Releases',
-  href: '/releases',
-  icon: CalendarRange,
-},
+    {
+        title: 'Feedback',
+        href: '/feedback',
+        icon: MessageSquareMore,
+    },
+    {
+        title: 'Releases',
+        href: '/releases',
+        icon: CalendarRange,
+    },
     {
         title: 'Analytics',
         href: '#analytics',
         icon: ChartColumnBig,
         disabled: true,
     },
-{
-  title: 'Docs',
-  href: '/docs',
-  icon: BookOpenText,
-},
+    {
+        title: 'Docs',
+        href: '/docs',
+        icon: BookOpenText,
+    },
     {
         title: 'Settings',
         href: '#settings',
@@ -76,7 +76,7 @@ export function AppSidebar() {
             variant="inset"
             className="border-none bg-transparent"
         >
-            <SidebarHeader className="px-4 pb-4 pt-5">
+            <SidebarHeader className="px-4 pt-5 pb-4">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton
@@ -100,7 +100,7 @@ export function AppSidebar() {
                 <NavMain items={mainNavItems} />
             </SidebarContent>
 
-            <SidebarFooter className="px-3 pb-3 pt-2">
+            <SidebarFooter className="px-3 pt-2 pb-3">
                 <div className="rounded-2xl border border-white/80 bg-white/90 p-2 shadow-[0_18px_40px_-38px_rgba(15,23,42,0.9)]">
                     <NavUser />
                 </div>

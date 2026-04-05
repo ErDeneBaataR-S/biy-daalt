@@ -46,7 +46,9 @@ export function DashboardReleaseDialog({
     release,
     onSubmit,
 }: DashboardReleaseDialogProps) {
-    const [form, setForm] = useState<ReleaseDraft>(() => getInitialReleaseForm(release));
+    const [form, setForm] = useState<ReleaseDraft>(() =>
+        getInitialReleaseForm(release),
+    );
 
     const handleSubmit = () => {
         onSubmit(form);
@@ -62,14 +64,17 @@ export function DashboardReleaseDialog({
                             {release ? 'Edit release' : 'Create release'}
                         </DialogTitle>
                         <DialogDescription className="text-sm text-slate-500">
-                            Keep releases in browser storage until Laravel persistence is ready.
+                            Keep releases in browser storage until Laravel
+                            persistence is ready.
                         </DialogDescription>
                     </DialogHeader>
                 </div>
 
                 <div className="grid gap-4 px-6 py-5">
                     <label className="grid gap-2">
-                        <span className="text-sm font-medium text-slate-700">Release name</span>
+                        <span className="text-sm font-medium text-slate-700">
+                            Release name
+                        </span>
                         <Input
                             value={form.name}
                             onChange={(event) =>
@@ -84,7 +89,9 @@ export function DashboardReleaseDialog({
 
                     <div className="grid gap-4 sm:grid-cols-2">
                         <label className="grid gap-2">
-                            <span className="text-sm font-medium text-slate-700">Version</span>
+                            <span className="text-sm font-medium text-slate-700">
+                                Version
+                            </span>
                             <Input
                                 value={form.version}
                                 onChange={(event) =>
@@ -98,7 +105,9 @@ export function DashboardReleaseDialog({
                         </label>
 
                         <label className="grid gap-2">
-                            <span className="text-sm font-medium text-slate-700">Target date</span>
+                            <span className="text-sm font-medium text-slate-700">
+                                Target date
+                            </span>
                             <Input
                                 type="date"
                                 value={form.targetDate}
@@ -113,7 +122,9 @@ export function DashboardReleaseDialog({
                     </div>
 
                     <label className="grid gap-2">
-                        <span className="text-sm font-medium text-slate-700">Status</span>
+                        <span className="text-sm font-medium text-slate-700">
+                            Status
+                        </span>
                         <select
                             value={form.status}
                             onChange={(event) =>
@@ -122,7 +133,7 @@ export function DashboardReleaseDialog({
                                     status: event.target.value as ReleaseStatus,
                                 }))
                             }
-                            className="flex h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-xs outline-none transition focus-visible:border-sky-400"
+                            className="flex h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-xs transition outline-none focus-visible:border-sky-400"
                         >
                             <option value="planned">Planned</option>
                             <option value="in-review">In review</option>
@@ -131,7 +142,9 @@ export function DashboardReleaseDialog({
                     </label>
 
                     <label className="grid gap-2">
-                        <span className="text-sm font-medium text-slate-700">Summary</span>
+                        <span className="text-sm font-medium text-slate-700">
+                            Summary
+                        </span>
                         <textarea
                             value={form.summary}
                             onChange={(event) =>
@@ -142,13 +155,16 @@ export function DashboardReleaseDialog({
                             }
                             rows={3}
                             placeholder="Short note about what ships in this release."
-                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-xs outline-none transition focus-visible:border-sky-400"
+                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-xs transition outline-none focus-visible:border-sky-400"
                         />
                     </label>
                 </div>
 
                 <DialogFooter className="border-t border-slate-200/80 px-6 py-5">
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
+                    <Button
+                        variant="outline"
+                        onClick={() => onOpenChange(false)}
+                    >
                         Cancel
                     </Button>
                     <Button

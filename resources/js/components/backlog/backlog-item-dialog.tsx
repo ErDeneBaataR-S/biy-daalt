@@ -106,7 +106,8 @@ export function BacklogItemDialog({
                     <DialogHeader>
                         <DialogTitle>{title}</DialogTitle>
                         <DialogDescription>
-                            Update the backlog item details for the frontend-only workspace.
+                            Update the backlog item details for the
+                            frontend-only workspace.
                         </DialogDescription>
                     </DialogHeader>
 
@@ -150,7 +151,10 @@ export function BacklogItemDialog({
                                     </SelectTrigger>
                                     <SelectContent>
                                         {kindOptions.map((option) => (
-                                            <SelectItem key={option} value={option}>
+                                            <SelectItem
+                                                key={option}
+                                                value={option}
+                                            >
                                                 {formatLabel(option)}
                                             </SelectItem>
                                         ))}
@@ -174,7 +178,10 @@ export function BacklogItemDialog({
                                     </SelectTrigger>
                                     <SelectContent>
                                         {statusOptions.map((option) => (
-                                            <SelectItem key={option} value={option}>
+                                            <SelectItem
+                                                key={option}
+                                                value={option}
+                                            >
                                                 {formatLabel(option)}
                                             </SelectItem>
                                         ))}
@@ -186,7 +193,9 @@ export function BacklogItemDialog({
                                 <Label>Priority</Label>
                                 <Select
                                     value={draft.priority}
-                                    onValueChange={(value: BacklogItemPriority) =>
+                                    onValueChange={(
+                                        value: BacklogItemPriority,
+                                    ) =>
                                         setDraft((current) => ({
                                             ...current,
                                             priority: value,
@@ -198,7 +207,10 @@ export function BacklogItemDialog({
                                     </SelectTrigger>
                                     <SelectContent>
                                         {priorityOptions.map((option) => (
-                                            <SelectItem key={option} value={option}>
+                                            <SelectItem
+                                                key={option}
+                                                value={option}
+                                            >
                                                 {formatLabel(option)}
                                             </SelectItem>
                                         ))}
@@ -243,7 +255,9 @@ export function BacklogItemDialog({
 
                         <div className="grid gap-4 sm:grid-cols-2">
                             <div className="grid gap-2">
-                                <Label htmlFor="backlog-sprint">Sprint label</Label>
+                                <Label htmlFor="backlog-sprint">
+                                    Sprint label
+                                </Label>
                                 <Input
                                     id="backlog-sprint"
                                     value={draft.sprintLabel}
@@ -259,7 +273,9 @@ export function BacklogItemDialog({
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="backlog-estimate">Estimate label</Label>
+                                <Label htmlFor="backlog-estimate">
+                                    Estimate label
+                                </Label>
                                 <Input
                                     id="backlog-estimate"
                                     value={draft.estimateLabel}
@@ -283,7 +299,10 @@ export function BacklogItemDialog({
                             >
                                 Cancel
                             </Button>
-                            <Button type="submit" className="bg-sky-500 text-white hover:bg-sky-600">
+                            <Button
+                                type="submit"
+                                className="bg-sky-500 text-white hover:bg-sky-600"
+                            >
                                 Save item
                             </Button>
                         </DialogFooter>

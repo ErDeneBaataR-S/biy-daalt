@@ -99,10 +99,11 @@ function readRoadmapData() {
         const parsed = JSON.parse(raw) as { items?: Item[] };
 
         return Array.isArray(parsed.items) &&
-            parsed.items.every((item) =>
-                typeof item?.id === 'number' &&
-                typeof item?.title === 'string' &&
-                isStatus(item?.status),
+            parsed.items.every(
+                (item) =>
+                    typeof item?.id === 'number' &&
+                    typeof item?.title === 'string' &&
+                    isStatus(item?.status),
             )
             ? parsed.items
             : defaultItems;
@@ -174,7 +175,8 @@ export default function Roadmap() {
 
                 const nextStatus = isStatus(over.id)
                     ? over.id
-                    : current.find((candidate) => candidate.id === over.id)?.status;
+                    : current.find((candidate) => candidate.id === over.id)
+                          ?.status;
 
                 return nextStatus ? { ...item, status: nextStatus } : item;
             }),
@@ -202,7 +204,10 @@ export default function Roadmap() {
                     </button>
                 </div>
 
-                <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <DndContext
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                >
                     <div className="grid gap-4 md:grid-cols-3">
                         <Column
                             id="now"
@@ -275,13 +280,8 @@ function Column({ id, title, items, onEdit, onOpen, onDelete }: ColumnProps) {
 }
 
 function Card({ item, onEdit, onDelete }: CardProps) {
-    const {
-        attributes,
-        listeners,
-        setNodeRef,
-        transform,
-        transition,
-    } = useSortable({ id: item.id });
+    const { attributes, listeners, setNodeRef, transform, transition } =
+        useSortable({ id: item.id });
 
     const style = {
         transform: CSS.Transform.toString(transform),

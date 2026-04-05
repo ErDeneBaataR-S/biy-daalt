@@ -1,8 +1,4 @@
-import {
-    GripVertical,
-    PencilLine,
-    Trash2,
-} from 'lucide-react';
+import { GripVertical, PencilLine, Trash2 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -61,14 +57,15 @@ export function BacklogTable({
 }: BacklogTableProps) {
     const getInitials = useInitials();
     const allVisibleSelected =
-        items.length > 0 && items.every((item) => selectedIds.includes(item.id));
+        items.length > 0 &&
+        items.every((item) => selectedIds.includes(item.id));
 
     return (
         <div className="overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white">
             <div className="overflow-x-auto">
                 <table className="min-w-full border-separate border-spacing-0">
                     <thead>
-                        <tr className="text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                        <tr className="text-left text-xs font-semibold tracking-[0.16em] text-slate-400 uppercase">
                             <th className="border-b border-slate-200 px-4 py-3">
                                 <Checkbox
                                     checked={allVisibleSelected}
@@ -76,12 +73,24 @@ export function BacklogTable({
                                     aria-label="Select all visible backlog rows"
                                 />
                             </th>
-                            <th className="border-b border-slate-200 px-4 py-3">Title</th>
-                            <th className="border-b border-slate-200 px-4 py-3">Status</th>
-                            <th className="border-b border-slate-200 px-4 py-3">Priority</th>
-                            <th className="border-b border-slate-200 px-4 py-3">Owner</th>
-                            <th className="border-b border-slate-200 px-4 py-3">Team</th>
-                            <th className="border-b border-slate-200 px-4 py-3">Sprint</th>
+                            <th className="border-b border-slate-200 px-4 py-3">
+                                Title
+                            </th>
+                            <th className="border-b border-slate-200 px-4 py-3">
+                                Status
+                            </th>
+                            <th className="border-b border-slate-200 px-4 py-3">
+                                Priority
+                            </th>
+                            <th className="border-b border-slate-200 px-4 py-3">
+                                Owner
+                            </th>
+                            <th className="border-b border-slate-200 px-4 py-3">
+                                Team
+                            </th>
+                            <th className="border-b border-slate-200 px-4 py-3">
+                                Sprint
+                            </th>
                             <th className="border-b border-slate-200 px-4 py-3 text-right">
                                 Actions
                             </th>
@@ -96,8 +105,12 @@ export function BacklogTable({
                                     key={item.id}
                                     draggable
                                     onDragStart={(event) => {
-                                        event.dataTransfer.setData('text/plain', item.id);
-                                        event.dataTransfer.effectAllowed = 'move';
+                                        event.dataTransfer.setData(
+                                            'text/plain',
+                                            item.id,
+                                        );
+                                        event.dataTransfer.effectAllowed =
+                                            'move';
                                     }}
                                     onDragOver={(event) => {
                                         event.preventDefault();
@@ -105,7 +118,10 @@ export function BacklogTable({
                                     }}
                                     onDrop={(event) => {
                                         event.preventDefault();
-                                        const fromId = event.dataTransfer.getData('text/plain');
+                                        const fromId =
+                                            event.dataTransfer.getData(
+                                                'text/plain',
+                                            );
 
                                         if (fromId && fromId !== item.id) {
                                             onReorder(fromId, item.id);
@@ -116,7 +132,9 @@ export function BacklogTable({
                                     <td className="border-b border-slate-100 px-4 py-4 align-top">
                                         <Checkbox
                                             checked={selected}
-                                            onCheckedChange={() => onToggleSelect(item.id)}
+                                            onCheckedChange={() =>
+                                                onToggleSelect(item.id)
+                                            }
                                             aria-label={`Select ${item.title}`}
                                         />
                                     </td>
@@ -129,7 +147,7 @@ export function BacklogTable({
                                                 <p className="font-medium text-slate-900">
                                                     {item.title}
                                                 </p>
-                                                <p className="text-xs capitalize text-slate-400">
+                                                <p className="text-xs text-slate-400 capitalize">
                                                     {item.kind}
                                                 </p>
                                             </div>
@@ -190,7 +208,9 @@ export function BacklogTable({
                                                 variant="ghost"
                                                 size="icon"
                                                 className="size-8 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-rose-500"
-                                                onClick={() => onDelete(item.id)}
+                                                onClick={() =>
+                                                    onDelete(item.id)
+                                                }
                                             >
                                                 <Trash2 className="size-4" />
                                             </Button>

@@ -51,9 +51,7 @@ export function DashboardReleaseCard({
                             day.active
                                 ? 'border-sky-200 bg-sky-500 text-white shadow-sm'
                                 : 'border-transparent bg-slate-50 text-slate-700 dark:bg-slate-900 dark:text-slate-200',
-                            day.muted
-                                ? 'opacity-45'
-                                : '',
+                            day.muted ? 'opacity-45' : '',
                         ].join(' ')}
                     >
                         {day.day}

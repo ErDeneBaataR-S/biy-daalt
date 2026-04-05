@@ -43,7 +43,9 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                         }
                                     }}
                                 >
-                                    {item.icon && <item.icon className="size-4" />}
+                                    {item.icon && (
+                                        <item.icon className="size-4" />
+                                    )}
                                     <span>{item.title}</span>
                                 </Link>
                             </SidebarMenuButton>

@@ -11,7 +11,10 @@ export default function AppSidebarLayout({
     return (
         <AppShell variant="sidebar">
             <AppSidebar />
-            <AppContent variant="sidebar" className="overflow-x-hidden bg-[#eef2f7]">
+            <AppContent
+                variant="sidebar"
+                className="overflow-x-hidden bg-[#eef2f7]"
+            >
                 {breadcrumbs.length > 1 ? (
                     <AppSidebarHeader breadcrumbs={breadcrumbs} />
                 ) : null}

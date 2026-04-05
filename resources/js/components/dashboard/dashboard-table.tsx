@@ -25,10 +25,13 @@ type DashboardTableProps = {
 };
 
 const badgeToneClasses: Record<string, string> = {
-    success: 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-300',
-    warning: 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950/60 dark:text-amber-300',
+    success:
+        'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-300',
+    warning:
+        'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950/60 dark:text-amber-300',
     danger: 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900 dark:bg-rose-950/60 dark:text-rose-300',
-    neutral: 'border-slate-200 bg-slate-100 text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300',
+    neutral:
+        'border-slate-200 bg-slate-100 text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300',
     info: 'border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-900 dark:bg-sky-950/60 dark:text-sky-300',
     purple: 'border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-900 dark:bg-violet-950/60 dark:text-violet-300',
 };
@@ -42,11 +45,7 @@ function initials(value: string) {
         .toUpperCase();
 }
 
-export function DashboardTable({
-    columns,
-    rows,
-    footer,
-}: DashboardTableProps) {
+export function DashboardTable({ columns, rows, footer }: DashboardTableProps) {
     return (
         <div className="overflow-hidden rounded-[1.4rem] border border-slate-200/80 bg-white shadow-[0_30px_80px_-50px_rgba(15,23,42,0.4)] dark:border-slate-800 dark:bg-slate-950">
             <div className="overflow-x-auto">
@@ -75,7 +74,9 @@ export function DashboardTable({
                                 <td className="px-4 py-4">
                                     <Badge
                                         variant="outline"
-                                        className={badgeToneClasses[row.status.tone]}
+                                        className={
+                                            badgeToneClasses[row.status.tone]
+                                        }
                                     >
                                         {row.status.label}
                                     </Badge>
@@ -83,7 +84,9 @@ export function DashboardTable({
                                 <td className="px-4 py-4">
                                     <Badge
                                         variant="outline"
-                                        className={badgeToneClasses[row.priority.tone]}
+                                        className={
+                                            badgeToneClasses[row.priority.tone]
+                                        }
                                     >
                                         {row.priority.label}
                                     </Badge>

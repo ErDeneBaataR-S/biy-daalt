@@ -1,8 +1,4 @@
-import {
-    ChevronDown,
-    Plus,
-    SlidersHorizontal,
-} from 'lucide-react';
+import { ChevronDown, Plus, SlidersHorizontal } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,7 +17,12 @@ type BacklogShellProps = {
     onCreateKind: (kind: BacklogItemKind) => void;
 };
 
-const createOptions: BacklogItemKind[] = ['feature', 'bug', 'design', 'research'];
+const createOptions: BacklogItemKind[] = [
+    'feature',
+    'bug',
+    'design',
+    'research',
+];
 
 function formatLabel(value: string) {
     return value.replace('-', ' ');
@@ -37,14 +38,15 @@ export function BacklogShell({
             <div className="mx-auto w-full max-w-7xl rounded-[2rem] border border-white/70 bg-[#f8fafe] p-4 shadow-[0_30px_80px_-48px_rgba(15,23,42,0.35)] sm:p-5">
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/80 pb-4">
                     <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-500">
+                        <p className="text-xs font-semibold tracking-[0.18em] text-sky-500 uppercase">
                             Product workspace
                         </p>
                         <h1 className="mt-2 text-[1.9rem] font-semibold tracking-[-0.04em] text-slate-900">
                             Backlog
                         </h1>
                         <p className="mt-1 text-sm text-slate-500">
-                            {itemCount} work items in the frontend backlog workspace.
+                            {itemCount} work items in the frontend backlog
+                            workspace.
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -67,7 +69,9 @@ export function BacklogShell({
                                 align="end"
                                 className="min-w-48 rounded-xl border-slate-200 bg-white"
                             >
-                                <DropdownMenuLabel>Create item</DropdownMenuLabel>
+                                <DropdownMenuLabel>
+                                    Create item
+                                </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 {createOptions.map((option) => (
                                     <DropdownMenuItem
