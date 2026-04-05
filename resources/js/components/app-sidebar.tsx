@@ -40,30 +40,27 @@ const mainNavItems: NavItem[] = [
         href: backlog(),
         icon: ListTodo,
     },
-    {
-        title: 'Feedback',
-        href: '#feedback',
-        icon: MessageSquareMore,
-        disabled: true,
-    },
-    {
-        title: 'Releases',
-        href: '#releases',
-        icon: CalendarRange,
-        disabled: true,
-    },
+{
+title: 'Feedback',
+href: '/feedback',
+icon: MessageSquareMore,
+},
+     {
+  title: 'Releases',
+  href: '/releases',
+  icon: CalendarRange,
+},
     {
         title: 'Analytics',
         href: '#analytics',
         icon: ChartColumnBig,
         disabled: true,
     },
-    {
-        title: 'Docs',
-        href: '#docs',
-        icon: BookOpenText,
-        disabled: true,
-    },
+{
+  title: 'Docs',
+  href: '/docs',
+  icon: BookOpenText,
+},
     {
         title: 'Settings',
         href: '#settings',
