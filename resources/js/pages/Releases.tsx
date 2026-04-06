@@ -45,7 +45,9 @@ export default function Releases() {
     };
 
     const deleteRelease = (id: number) => {
-        setReleases((current) => current.filter((release) => release.id !== id));
+        setReleases((current) =>
+            current.filter((release) => release.id !== id),
+        );
     };
 
     const addFeature = (id: number) => {
@@ -66,21 +68,23 @@ export default function Releases() {
 
     return (
         <AppLayout>
-            <div className="p-6">
+            <div className="p-6 dark:bg-[#0b1220]">
                 <div className="mb-6 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Releases</h1>
+                    <h1 className="text-2xl font-bold dark:text-slate-100">
+                        Releases
+                    </h1>
 
                     <div className="flex gap-2">
                         <input
                             value={newVersion}
                             onChange={(e) => setNewVersion(e.target.value)}
                             placeholder="v1.1"
-                            className="rounded border p-2"
+                            className="rounded border p-2 dark:border-slate-700 dark:bg-[#162033] dark:text-slate-100 dark:placeholder:text-slate-400"
                         />
 
                         <button
                             onClick={addRelease}
-                            className="rounded bg-blue-500 px-4 text-white"
+                            className="rounded bg-blue-500 px-4 text-white hover:bg-blue-600"
                         >
                             + Add
                         </button>
@@ -88,7 +92,7 @@ export default function Releases() {
                 </div>
 
                 {releases.length === 0 ? (
-                    <div className="mt-20 text-center text-gray-400">
+                    <div className="mt-20 text-center text-gray-400 dark:text-slate-500">
                         No releases yet
                     </div>
                 ) : (
@@ -96,21 +100,21 @@ export default function Releases() {
                         {releases.map((r) => (
                             <div
                                 key={r.id}
-                                className="rounded-xl bg-white p-5 shadow-sm"
+                                className="rounded-xl bg-white p-5 shadow-sm dark:border dark:border-slate-700/60 dark:bg-[#111827] dark:shadow-[0_22px_45px_-34px_rgba(2,6,23,0.88)]"
                             >
                                 <div className="mb-3 flex justify-between">
-                                    <h2 className="text-lg font-semibold">
+                                    <h2 className="text-lg font-semibold dark:text-slate-100">
                                         {r.version}
                                     </h2>
 
                                     <div className="flex items-center gap-3">
-                                        <span className="text-sm text-gray-400">
+                                        <span className="text-sm text-gray-400 dark:text-slate-500">
                                             {r.date}
                                         </span>
 
                                         <button
                                             onClick={() => deleteRelease(r.id)}
-                                            className="text-red-500"
+                                            className="text-red-500 dark:text-rose-300"
                                             aria-label={`Delete ${r.version}`}
                                         >
                                             Delete
@@ -118,9 +122,9 @@ export default function Releases() {
                                     </div>
                                 </div>
 
-                                <ul className="space-y-1 text-sm">
+                                <ul className="space-y-1 text-sm dark:text-slate-300">
                                     {r.features.length === 0 ? (
-                                        <li className="text-gray-400">
+                                        <li className="text-gray-400 dark:text-slate-500">
                                             No features yet
                                         </li>
                                     ) : (
@@ -134,7 +138,7 @@ export default function Releases() {
 
                                 <button
                                     onClick={() => addFeature(r.id)}
-                                    className="mt-3 rounded bg-blue-100 px-2 py-1 text-xs"
+                                    className="mt-3 rounded bg-blue-100 px-2 py-1 text-xs dark:bg-sky-500/15 dark:text-sky-300"
                                 >
                                     + Add feature
                                 </button>

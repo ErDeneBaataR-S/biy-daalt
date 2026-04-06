@@ -101,7 +101,7 @@ export function BacklogItemDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="rounded-[1.5rem] border-slate-200 p-0">
+            <DialogContent className="rounded-[1.5rem] border-slate-200 p-0 dark:border-slate-700/70 dark:bg-[#111827]">
                 <div className="p-6">
                     <DialogHeader>
                         <DialogTitle>{title}</DialogTitle>

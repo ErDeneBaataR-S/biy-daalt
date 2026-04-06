@@ -44,7 +44,9 @@ export default function Feedback() {
     };
 
     const deleteFeedback = (id: number) => {
-        setFeedbacks((current) => current.filter((feedback) => feedback.id !== id));
+        setFeedbacks((current) =>
+            current.filter((feedback) => feedback.id !== id),
+        );
     };
 
     const updateFeedback = (
@@ -65,12 +67,14 @@ export default function Feedback() {
 
     return (
         <AppLayout>
-            <div className="p-6">
+            <div className="p-6 dark:bg-[#0b1220]">
                 <div className="mb-6 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Feedback</h1>
+                    <h1 className="text-2xl font-bold dark:text-slate-100">
+                        Feedback
+                    </h1>
                     <button
                         onClick={addFeedback}
-                        className="rounded-lg bg-blue-500 px-4 py-2 text-white"
+                        className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
                     >
                         + Add
                     </button>
@@ -80,83 +84,85 @@ export default function Feedback() {
                     {columns.map((column) => (
                         <div
                             key={column.status}
-                            className="rounded-xl bg-white p-4 shadow-sm"
+                            className="rounded-xl bg-white p-4 shadow-sm dark:border dark:border-slate-700/60 dark:bg-[#111827] dark:shadow-[0_22px_45px_-34px_rgba(2,6,23,0.88)]"
                         >
-                            <h2 className="mb-3 font-semibold">
+                            <h2 className="mb-3 font-semibold dark:text-slate-100">
                                 {column.status} ({column.items.length})
                             </h2>
 
                             {column.items.map((feedback) => (
-                            <div
-                                key={feedback.id}
-                                className="mb-3 rounded-lg border p-3"
-                            >
-                                <h3 className="font-medium">
-                                    {feedback.title}
-                                </h3>
-                                <p className="text-sm text-gray-500">
-                                    {feedback.description}
-                                </p>
-
-                                <span
-                                    className={`rounded px-2 py-1 text-xs ${getFeedbackPriorityColor(feedback.priority)}`}
+                                <div
+                                    key={feedback.id}
+                                    className="mb-3 rounded-lg border p-3 dark:border-slate-700/60 dark:bg-[#0f1728]"
                                 >
-                                    {feedback.priority}
-                                </span>
+                                    <h3 className="font-medium dark:text-slate-100">
+                                        {feedback.title}
+                                    </h3>
+                                    <p className="text-sm text-gray-500 dark:text-slate-400">
+                                        {feedback.description}
+                                    </p>
 
-                                <p
-                                    className={`mt-1 text-xs ${isDeadlineOverdue(feedback.deadline) ? 'font-semibold text-red-500' : 'text-gray-400'}`}
-                                >
-                                    Deadline: {feedback.deadline}
-                                </p>
-
-                                <div className="mt-2 flex justify-end gap-2">
-                                    <select
-                                        value={feedback.status}
-                                        onChange={(e) =>
-                                            updateFeedback(feedback.id, {
-                                                status: e.target.value,
-                                            })
-                                        }
-                                        className="rounded border px-2 py-1 text-sm"
+                                    <span
+                                        className={`rounded px-2 py-1 text-xs ${getFeedbackPriorityColor(feedback.priority)}`}
                                     >
-                                        {feedbackStatusOptions.map((status) => (
-                                            <option key={status}>
-                                                {status}
-                                            </option>
-                                        ))}
-                                    </select>
+                                        {feedback.priority}
+                                    </span>
 
-                                    <select
-                                        value={feedback.priority}
-                                        onChange={(e) =>
-                                            updateFeedback(feedback.id, {
-                                                priority: e.target.value,
-                                            })
-                                        }
-                                        className="rounded border px-2 py-1 text-sm"
+                                    <p
+                                        className={`mt-1 text-xs ${isDeadlineOverdue(feedback.deadline) ? 'font-semibold text-red-500' : 'text-gray-400'}`}
                                     >
-                                        {feedbackPriorityOptions.map(
-                                            (priority) => (
-                                                <option key={priority}>
-                                                    {priority}
-                                                </option>
-                                            ),
-                                        )}
-                                    </select>
+                                        Deadline: {feedback.deadline}
+                                    </p>
 
-                                    <button
-                                        onClick={() =>
-                                            deleteFeedback(feedback.id)
-                                        }
-                                        className="text-red-500"
-                                        aria-label={`Delete ${feedback.title}`}
-                                    >
-                                        Delete
-                                    </button>
+                                    <div className="mt-2 flex justify-end gap-2">
+                                        <select
+                                            value={feedback.status}
+                                            onChange={(e) =>
+                                                updateFeedback(feedback.id, {
+                                                    status: e.target.value,
+                                                })
+                                            }
+                                            className="rounded border px-2 py-1 text-sm dark:border-slate-700 dark:bg-[#162033] dark:text-slate-100"
+                                        >
+                                            {feedbackStatusOptions.map(
+                                                (status) => (
+                                                    <option key={status}>
+                                                        {status}
+                                                    </option>
+                                                ),
+                                            )}
+                                        </select>
+
+                                        <select
+                                            value={feedback.priority}
+                                            onChange={(e) =>
+                                                updateFeedback(feedback.id, {
+                                                    priority: e.target.value,
+                                                })
+                                            }
+                                            className="rounded border px-2 py-1 text-sm dark:border-slate-700 dark:bg-[#162033] dark:text-slate-100"
+                                        >
+                                            {feedbackPriorityOptions.map(
+                                                (priority) => (
+                                                    <option key={priority}>
+                                                        {priority}
+                                                    </option>
+                                                ),
+                                            )}
+                                        </select>
+
+                                        <button
+                                            onClick={() =>
+                                                deleteFeedback(feedback.id)
+                                            }
+                                            className="text-red-500 dark:text-rose-300"
+                                            aria-label={`Delete ${feedback.title}`}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
                         </div>
                     ))}
                 </div>

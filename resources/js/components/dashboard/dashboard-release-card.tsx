@@ -21,7 +21,7 @@ export function DashboardReleaseCard({
     releases,
 }: DashboardReleaseCardProps) {
     return (
-        <div className="rounded-[1.4rem] border border-slate-200/80 bg-white p-5 shadow-[0_30px_80px_-50px_rgba(15,23,42,0.4)] dark:border-slate-800 dark:bg-slate-950">
+        <div className="rounded-[1.4rem] border border-slate-200/80 bg-white p-5 shadow-[0_30px_80px_-50px_rgba(15,23,42,0.4)] dark:border-slate-700/60 dark:bg-[#111827] dark:shadow-[0_30px_80px_-46px_rgba(2,6,23,0.82)]">
             <div className="flex items-center justify-between gap-3">
                 <div>
                     <p className="text-xs font-semibold tracking-[0.18em] text-slate-500 uppercase dark:text-slate-400">
@@ -50,7 +50,7 @@ export function DashboardReleaseCard({
                             'flex h-9 items-center justify-center rounded-xl border text-sm font-medium',
                             day.active
                                 ? 'border-sky-200 bg-sky-500 text-white shadow-sm'
-                                : 'border-transparent bg-slate-50 text-slate-700 dark:bg-slate-900 dark:text-slate-200',
+                                : 'border-transparent bg-slate-50 text-slate-700 dark:bg-[#0f1728] dark:text-slate-200',
                             day.muted ? 'opacity-45' : '',
                         ].join(' ')}
                     >
@@ -63,7 +63,7 @@ export function DashboardReleaseCard({
                 {releases.map((release) => (
                     <div
                         key={release.name}
-                        className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200/80 px-4 py-3 dark:border-slate-800"
+                        className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200/80 px-4 py-3 dark:border-slate-700/60 dark:bg-[#0f1728]/72"
                     >
                         <div>
                             <p className="text-sm font-medium text-slate-900 dark:text-slate-100">

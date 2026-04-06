@@ -22,21 +22,21 @@ export function RoadmapDialog({ open, onClose, onSubmit, initial }: Props) {
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-            <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
-                <h2 className="mb-4 text-lg font-semibold">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg dark:border dark:border-slate-700/70 dark:bg-[#111827]">
+                <h2 className="mb-4 text-lg font-semibold dark:text-slate-100">
                     {initial ? 'Edit Item' : 'New Item'}
                 </h2>
 
                 <input
-                    className="mb-3 w-full rounded border p-2"
+                    className="mb-3 w-full rounded border p-2 dark:border-slate-700 dark:bg-[#0f1728] dark:text-slate-100 dark:placeholder:text-slate-400"
                     placeholder="Title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
 
                 <select
-                    className="mb-4 w-full rounded border p-2"
+                    className="mb-4 w-full rounded border p-2 dark:border-slate-700 dark:bg-[#0f1728] dark:text-slate-100"
                     value={status}
                     onChange={(e) => setStatus(e.target.value as Status)}
                 >
@@ -46,7 +46,12 @@ export function RoadmapDialog({ open, onClose, onSubmit, initial }: Props) {
                 </select>
 
                 <div className="flex justify-end gap-2">
-                    <button onClick={onClose}>Cancel</button>
+                    <button
+                        onClick={onClose}
+                        className="text-slate-600 dark:text-slate-300"
+                    >
+                        Cancel
+                    </button>
 
                     <button
                         onClick={() => {

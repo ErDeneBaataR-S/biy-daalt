@@ -198,7 +198,7 @@ export default function Roadmap() {
                             setEditing(null);
                             setOpen(true);
                         }}
-                        className="rounded bg-sky-500 px-4 py-2 text-white"
+                        className="rounded bg-sky-500 px-4 py-2 text-white hover:bg-sky-600"
                     >
                         + New
                     </button>
@@ -252,8 +252,11 @@ function Column({ id, title, items, onEdit, onOpen, onDelete }: ColumnProps) {
     const { setNodeRef } = useDroppable({ id });
 
     return (
-        <div ref={setNodeRef} className="rounded-xl border bg-white p-4">
-            <h2 className="mb-3 font-semibold">
+        <div
+            ref={setNodeRef}
+            className="rounded-xl border bg-white p-4 dark:border-slate-700/60 dark:bg-[#111827]"
+        >
+            <h2 className="mb-3 font-semibold dark:text-slate-100">
                 {title} ({items.length})
             </h2>
 
@@ -292,17 +295,19 @@ function Card({ item, onEdit, onDelete }: CardProps) {
         <div
             ref={setNodeRef}
             style={style}
-            className="rounded-lg border bg-white p-3 shadow-sm"
+            className="rounded-lg border bg-white p-3 shadow-sm dark:border-slate-700/60 dark:bg-[#0f1728] dark:shadow-[0_20px_45px_-34px_rgba(2,6,23,0.88)]"
         >
             <div
                 {...attributes}
                 {...listeners}
-                className="mb-2 cursor-grab text-xs text-gray-400"
+                className="mb-2 cursor-grab text-xs text-gray-400 dark:text-slate-500"
             >
                 Drag
             </div>
 
-            <p className="text-sm font-medium">{item.title}</p>
+            <p className="text-sm font-medium dark:text-slate-100">
+                {item.title}
+            </p>
 
             <div className="mt-2 flex justify-end gap-2">
                 <button
@@ -310,7 +315,7 @@ function Card({ item, onEdit, onDelete }: CardProps) {
                         event.stopPropagation();
                         onEdit();
                     }}
-                    className="text-xs text-blue-500"
+                    className="text-xs text-blue-500 dark:text-sky-300"
                 >
                     Edit
                 </button>
@@ -320,7 +325,7 @@ function Card({ item, onEdit, onDelete }: CardProps) {
                         event.stopPropagation();
                         onDelete();
                     }}
-                    className="text-xs text-red-500"
+                    className="text-xs text-red-500 dark:text-rose-300"
                 >
                     Delete
                 </button>

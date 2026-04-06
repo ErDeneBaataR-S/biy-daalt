@@ -23,26 +23,26 @@ function formatLabel(value: string) {
 function getStatusTone(status: BacklogItem['status']) {
     switch (status) {
         case 'done':
-            return 'border-emerald-200 bg-emerald-50 text-emerald-600';
+            return 'border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-300';
         case 'blocked':
-            return 'border-rose-200 bg-rose-50 text-rose-600';
+            return 'border-rose-200 bg-rose-50 text-rose-600 dark:border-rose-900 dark:bg-rose-950/60 dark:text-rose-300';
         case 'in-progress':
-            return 'border-sky-200 bg-sky-50 text-sky-600';
+            return 'border-sky-200 bg-sky-50 text-sky-600 dark:border-sky-900 dark:bg-sky-950/60 dark:text-sky-300';
         default:
-            return 'border-amber-200 bg-amber-50 text-amber-600';
+            return 'border-amber-200 bg-amber-50 text-amber-600 dark:border-amber-900 dark:bg-amber-950/60 dark:text-amber-300';
     }
 }
 
 function getPriorityTone(priority: BacklogItem['priority']) {
     switch (priority) {
         case 'critical':
-            return 'border-rose-200 bg-rose-50 text-rose-600';
+            return 'border-rose-200 bg-rose-50 text-rose-600 dark:border-rose-900 dark:bg-rose-950/60 dark:text-rose-300';
         case 'high':
-            return 'border-amber-200 bg-amber-50 text-amber-600';
+            return 'border-amber-200 bg-amber-50 text-amber-600 dark:border-amber-900 dark:bg-amber-950/60 dark:text-amber-300';
         case 'medium':
-            return 'border-sky-200 bg-sky-50 text-sky-600';
+            return 'border-sky-200 bg-sky-50 text-sky-600 dark:border-sky-900 dark:bg-sky-950/60 dark:text-sky-300';
         default:
-            return 'border-slate-200 bg-slate-100 text-slate-600';
+            return 'border-slate-200 bg-slate-100 text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300';
     }
 }
 
@@ -61,11 +61,11 @@ export function BacklogTable({
         items.every((item) => selectedIds.includes(item.id));
 
     return (
-        <div className="overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white">
+        <div className="overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white dark:border-slate-700/60 dark:bg-[#111827] dark:shadow-[0_30px_80px_-46px_rgba(2,6,23,0.82)]">
             <div className="overflow-x-auto">
                 <table className="min-w-full border-separate border-spacing-0">
                     <thead>
-                        <tr className="text-left text-xs font-semibold tracking-[0.16em] text-slate-400 uppercase">
+                        <tr className="text-left text-xs font-semibold tracking-[0.16em] text-slate-400 uppercase dark:text-slate-500">
                             <th className="border-b border-slate-200 px-4 py-3">
                                 <Checkbox
                                     checked={allVisibleSelected}
@@ -127,7 +127,7 @@ export function BacklogTable({
                                             onReorder(fromId, item.id);
                                         }
                                     }}
-                                    className="group text-sm text-slate-600"
+                                    className="group text-sm text-slate-600 dark:text-slate-300"
                                 >
                                     <td className="border-b border-slate-100 px-4 py-4 align-top">
                                         <Checkbox
@@ -140,14 +140,14 @@ export function BacklogTable({
                                     </td>
                                     <td className="border-b border-slate-100 px-4 py-4 align-top">
                                         <div className="flex items-start gap-3">
-                                            <span className="mt-0.5 text-slate-300 transition group-hover:text-slate-500">
+                                            <span className="mt-0.5 text-slate-300 transition group-hover:text-slate-500 dark:text-slate-600 dark:group-hover:text-slate-400">
                                                 <GripVertical className="size-4" />
                                             </span>
                                             <div className="space-y-1">
-                                                <p className="font-medium text-slate-900">
+                                                <p className="font-medium text-slate-900 dark:text-slate-100">
                                                     {item.title}
                                                 </p>
-                                                <p className="text-xs text-slate-400 capitalize">
+                                                <p className="text-xs text-slate-400 capitalize dark:text-slate-500">
                                                     {item.kind}
                                                 </p>
                                             </div>
@@ -171,12 +171,12 @@ export function BacklogTable({
                                     </td>
                                     <td className="border-b border-slate-100 px-4 py-4 align-top">
                                         <div className="flex items-center gap-2">
-                                            <Avatar className="size-8 border border-slate-200 bg-white">
-                                                <AvatarFallback className="bg-slate-900 text-[0.68rem] font-semibold text-white">
+                                            <Avatar className="size-8 border border-slate-200 bg-white dark:border-slate-700 dark:bg-[#162033]">
+                                                <AvatarFallback className="bg-slate-900 text-[0.68rem] font-semibold text-white dark:bg-slate-100 dark:text-slate-900">
                                                     {getInitials(item.owner)}
                                                 </AvatarFallback>
                                             </Avatar>
-                                            <span className="font-medium text-slate-700">
+                                            <span className="font-medium text-slate-700 dark:text-slate-200">
                                                 {item.owner}
                                             </span>
                                         </div>
@@ -186,10 +186,10 @@ export function BacklogTable({
                                     </td>
                                     <td className="border-b border-slate-100 px-4 py-4 align-top">
                                         <div className="space-y-1">
-                                            <p className="font-medium text-slate-700">
+                                            <p className="font-medium text-slate-700 dark:text-slate-200">
                                                 {item.sprintLabel}
                                             </p>
-                                            <p className="text-xs text-slate-400">
+                                            <p className="text-xs text-slate-400 dark:text-slate-500">
                                                 {item.estimateLabel}
                                             </p>
                                         </div>
@@ -199,7 +199,7 @@ export function BacklogTable({
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="size-8 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                                                className="size-8 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-500 dark:hover:bg-[#162033] dark:hover:text-slate-100"
                                                 onClick={() => onEdit(item)}
                                             >
                                                 <PencilLine className="size-4" />
@@ -207,7 +207,7 @@ export function BacklogTable({
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="size-8 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-rose-500"
+                                                className="size-8 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-rose-500 dark:text-slate-500 dark:hover:bg-[#162033] dark:hover:text-rose-300"
                                                 onClick={() =>
                                                     onDelete(item.id)
                                                 }

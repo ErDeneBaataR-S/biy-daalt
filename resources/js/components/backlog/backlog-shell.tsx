@@ -34,17 +34,17 @@ export function BacklogShell({
     onCreateKind,
 }: BacklogShellProps) {
     return (
-        <div className="flex flex-1 flex-col bg-[#eef2f7] px-3 py-3 sm:px-4 sm:py-4 lg:px-5">
-            <div className="mx-auto w-full max-w-7xl rounded-[2rem] border border-white/70 bg-[#f8fafe] p-4 shadow-[0_30px_80px_-48px_rgba(15,23,42,0.35)] sm:p-5">
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/80 pb-4">
+        <div className="flex flex-1 flex-col bg-[#eef2f7] px-3 py-3 sm:px-4 sm:py-4 lg:px-5 dark:bg-[#0b1220]">
+            <div className="mx-auto w-full max-w-7xl rounded-[2rem] border border-white/70 bg-[#f8fafe] p-4 shadow-[0_30px_80px_-48px_rgba(15,23,42,0.35)] sm:p-5 dark:border-slate-700/60 dark:bg-[#111a2b] dark:shadow-[0_30px_80px_-48px_rgba(2,6,23,0.78)]">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/80 pb-4 dark:border-slate-700/70">
                     <div>
                         <p className="text-xs font-semibold tracking-[0.18em] text-sky-500 uppercase">
                             Product workspace
                         </p>
-                        <h1 className="mt-2 text-[1.9rem] font-semibold tracking-[-0.04em] text-slate-900">
+                        <h1 className="mt-2 text-[1.9rem] font-semibold tracking-[-0.04em] text-slate-900 dark:text-slate-100">
                             Backlog
                         </h1>
-                        <p className="mt-1 text-sm text-slate-500">
+                        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                             {itemCount} work items in the frontend backlog
                             workspace.
                         </p>
@@ -52,7 +52,7 @@ export function BacklogShell({
                     <div className="flex items-center gap-2">
                         <Button
                             variant="outline"
-                            className="rounded-xl border-slate-200 bg-white text-slate-600"
+                            className="rounded-xl border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-[#162033] dark:text-slate-300 dark:hover:bg-[#1c2940] dark:hover:text-slate-100"
                         >
                             <SlidersHorizontal className="size-4" />
                             Filters
@@ -67,7 +67,7 @@ export function BacklogShell({
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
                                 align="end"
-                                className="min-w-48 rounded-xl border-slate-200 bg-white"
+                                className="min-w-48 rounded-xl border-slate-200 bg-white dark:border-slate-700 dark:bg-[#111827] dark:text-slate-100"
                             >
                                 <DropdownMenuLabel>
                                     Create item

@@ -80,7 +80,7 @@ export function AppSidebar() {
                         <SidebarMenuButton
                             size="lg"
                             asChild
-                            className="h-auto rounded-2xl border border-white/70 bg-white/90 p-2 shadow-[0_18px_40px_-38px_rgba(15,23,42,0.9)] hover:bg-white data-[active=true]:bg-white"
+                            className="h-auto rounded-2xl border border-white/70 bg-white/90 p-2 shadow-[0_18px_40px_-38px_rgba(15,23,42,0.9)] hover:bg-white data-[active=true]:bg-white dark:border-slate-700/60 dark:bg-[#111a2b]/95 dark:hover:bg-[#162033] dark:data-[active=true]:bg-[#162033]"
                         >
                             <Link
                                 href={dashboard()}
@@ -99,7 +99,7 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter className="px-3 pt-2 pb-3">
-                <div className="rounded-2xl border border-white/80 bg-white/90 p-2 shadow-[0_18px_40px_-38px_rgba(15,23,42,0.9)]">
+                <div className="rounded-2xl border border-white/80 bg-white/90 p-2 shadow-[0_18px_40px_-38px_rgba(15,23,42,0.9)] dark:border-slate-700/60 dark:bg-[#111a2b]/95 dark:shadow-[0_20px_45px_-34px_rgba(2,6,23,0.9)]">
                     <NavUser />
                 </div>
             </SidebarFooter>

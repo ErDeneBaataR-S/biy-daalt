@@ -1,5 +1,5 @@
-import AppLayout from '@/layouts/app-layout';
 import { useState } from 'react';
+import AppLayout from '@/layouts/app-layout';
 
 const docs = [
     {
@@ -34,9 +34,9 @@ export default function Docs() {
     return (
         <AppLayout>
             {' '}
-            <div className="flex h-full">
+            <div className="flex h-full dark:bg-[#0b1220]">
                 {/* SIDEBAR */}
-                <div className="w-64 space-y-2 border-r bg-white p-4">
+                <div className="w-64 space-y-2 border-r bg-white p-4 dark:border-slate-700/60 dark:bg-[#111827]">
                     <h2 className="mb-4 font-bold">📘 Docs</h2>
 
                     {/* 🔍 SEARCH */}
@@ -44,7 +44,7 @@ export default function Docs() {
                         placeholder="Search..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="mb-3 w-full rounded border p-2"
+                        className="mb-3 w-full rounded border p-2 dark:border-slate-700 dark:bg-[#0f1728] dark:text-slate-100 dark:placeholder:text-slate-400"
                     />
 
                     {/* 🔥 SEARCH RESULT */}
@@ -68,12 +68,12 @@ export default function Docs() {
                                                 });
                                         }, 100);
                                     }}
-                                    className="cursor-pointer rounded border p-2 hover:bg-gray-100"
+                                    className="cursor-pointer rounded border p-2 hover:bg-gray-100 dark:border-slate-700/60 dark:bg-[#0f1728] dark:hover:bg-[#162033]"
                                 >
-                                    <p className="text-sm font-medium">
+                                    <p className="text-sm font-medium dark:text-slate-100">
                                         {d.title}
                                     </p>
-                                    <p className="line-clamp-2 text-xs text-gray-500">
+                                    <p className="line-clamp-2 text-xs text-gray-500 dark:text-slate-400">
                                         {d.content}
                                     </p>
                                 </div>
@@ -96,8 +96,8 @@ export default function Docs() {
                                 }}
                                 className={`block w-full rounded px-3 py-2 text-left ${
                                     active === i
-                                        ? 'bg-blue-100 text-blue-600'
-                                        : 'hover:bg-gray-100'
+                                        ? 'bg-blue-100 text-blue-600 dark:bg-sky-500/15 dark:text-sky-300'
+                                        : 'hover:bg-gray-100 dark:text-slate-300 dark:hover:bg-[#162033]'
                                 }`}
                             >
                                 {d.title}
@@ -107,7 +107,7 @@ export default function Docs() {
                 </div>
 
                 {/* CONTENT */}
-                <div className="flex-1 p-8">
+                <div className="flex-1 p-8 dark:text-slate-100">
                     <h1
                         id={docs[active].title}
                         className="mb-4 text-2xl font-bold"
@@ -115,13 +115,13 @@ export default function Docs() {
                         {docs[active].title}
                     </h1>
 
-                    <p className="leading-relaxed text-gray-600">
+                    <p className="leading-relaxed text-gray-600 dark:text-slate-300">
                         {docs[active].content}
                     </p>
 
                     {/* EXTRA */}
-                    <div className="mt-6 rounded bg-gray-50 p-4">
-                        <p className="text-sm text-gray-500">
+                    <div className="mt-6 rounded bg-gray-50 p-4 dark:bg-[#0f1728]">
+                        <p className="text-sm text-gray-500 dark:text-slate-400">
                             💡 Tip: This section explains how this feature
                             works.
                         </p>

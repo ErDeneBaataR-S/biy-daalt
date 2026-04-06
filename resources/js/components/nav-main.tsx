@@ -26,12 +26,12 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 isActive={isActive && !isDisabled}
                                 tooltip={{ children: item.title }}
                                 className={cn(
-                                    'h-10 rounded-xl px-3 text-[0.92rem] font-medium text-slate-500 hover:bg-white hover:text-slate-900 data-[active=true]:bg-white data-[active=true]:text-sky-600 data-[active=true]:shadow-sm',
+                                    'h-10 rounded-xl px-3 text-[0.92rem] font-medium text-slate-500 hover:bg-white hover:text-slate-900 data-[active=true]:bg-white data-[active=true]:text-sky-600 data-[active=true]:shadow-sm dark:text-slate-400 dark:hover:bg-[#162033] dark:hover:text-slate-100 dark:data-[active=true]:bg-[#162033] dark:data-[active=true]:text-sky-300',
                                     isActive &&
                                         !isDisabled &&
                                         'before:absolute before:inset-y-2 before:left-0 before:w-0.5 before:rounded-full before:bg-sky-500',
                                     isDisabled &&
-                                        'cursor-default opacity-70 hover:bg-transparent hover:text-slate-500',
+                                        'cursor-default opacity-70 hover:bg-transparent hover:text-slate-500 dark:hover:bg-transparent dark:hover:text-slate-400',
                                 )}
                             >
                                 <Link

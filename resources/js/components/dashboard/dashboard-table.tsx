@@ -47,11 +47,11 @@ function initials(value: string) {
 
 export function DashboardTable({ columns, rows, footer }: DashboardTableProps) {
     return (
-        <div className="overflow-hidden rounded-[1.4rem] border border-slate-200/80 bg-white shadow-[0_30px_80px_-50px_rgba(15,23,42,0.4)] dark:border-slate-800 dark:bg-slate-950">
+        <div className="overflow-hidden rounded-[1.4rem] border border-slate-200/80 bg-white shadow-[0_30px_80px_-50px_rgba(15,23,42,0.4)] dark:border-slate-700/60 dark:bg-[#111827] dark:shadow-[0_30px_80px_-46px_rgba(2,6,23,0.82)]">
             <div className="overflow-x-auto">
                 <table className="min-w-full border-collapse">
                     <thead>
-                        <tr className="border-b border-slate-200/80 bg-slate-50/80 dark:border-slate-800 dark:bg-slate-900/80">
+                        <tr className="border-b border-slate-200/80 bg-slate-50/80 dark:border-slate-700/60 dark:bg-[#0f1728]">
                             {columns.map((column) => (
                                 <th
                                     key={column}
@@ -66,7 +66,7 @@ export function DashboardTable({ columns, rows, footer }: DashboardTableProps) {
                         {rows.map((row) => (
                             <tr
                                 key={row.id}
-                                className="border-b border-slate-200/70 last:border-b-0 dark:border-slate-800"
+                                className="border-b border-slate-200/70 last:border-b-0 dark:border-slate-700/50"
                             >
                                 <td className="px-4 py-4 text-sm font-medium text-slate-900 dark:text-slate-100">
                                     {row.title}
@@ -93,8 +93,8 @@ export function DashboardTable({ columns, rows, footer }: DashboardTableProps) {
                                 </td>
                                 <td className="px-4 py-4">
                                     <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
-                                        <Avatar className="size-8 border border-slate-200 dark:border-slate-700">
-                                            <AvatarFallback className="bg-slate-100 text-[0.68rem] font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                                        <Avatar className="size-8 border border-slate-200 dark:border-slate-700/70">
+                                            <AvatarFallback className="bg-slate-100 text-[0.68rem] font-semibold text-slate-700 dark:bg-[#162033] dark:text-slate-200">
                                                 {initials(row.owner)}
                                             </AvatarFallback>
                                         </Avatar>
@@ -113,7 +113,7 @@ export function DashboardTable({ columns, rows, footer }: DashboardTableProps) {
                 </table>
             </div>
             {footer ? (
-                <div className="border-t border-slate-200/70 px-4 py-3 text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
+                <div className="border-t border-slate-200/70 px-4 py-3 text-sm text-slate-500 dark:border-slate-700/60 dark:text-slate-400">
                     {footer}
                 </div>
             ) : null}

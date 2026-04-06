@@ -57,13 +57,13 @@ export function DashboardReleaseDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="rounded-[1.5rem] border-slate-200 p-0 sm:max-w-xl">
-                <div className="border-b border-slate-200/80 px-6 py-5">
+            <DialogContent className="rounded-[1.5rem] border-slate-200 p-0 sm:max-w-xl dark:border-slate-700/70 dark:bg-[#111827]">
+                <div className="border-b border-slate-200/80 px-6 py-5 dark:border-slate-700/70">
                     <DialogHeader>
-                        <DialogTitle className="text-xl text-slate-900">
+                        <DialogTitle className="text-xl text-slate-900 dark:text-slate-100">
                             {release ? 'Edit release' : 'Create release'}
                         </DialogTitle>
-                        <DialogDescription className="text-sm text-slate-500">
+                        <DialogDescription className="text-sm text-slate-500 dark:text-slate-400">
                             Keep releases in browser storage until Laravel
                             persistence is ready.
                         </DialogDescription>
@@ -72,7 +72,7 @@ export function DashboardReleaseDialog({
 
                 <div className="grid gap-4 px-6 py-5">
                     <label className="grid gap-2">
-                        <span className="text-sm font-medium text-slate-700">
+                        <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
                             Release name
                         </span>
                         <Input
@@ -89,7 +89,7 @@ export function DashboardReleaseDialog({
 
                     <div className="grid gap-4 sm:grid-cols-2">
                         <label className="grid gap-2">
-                            <span className="text-sm font-medium text-slate-700">
+                            <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
                                 Version
                             </span>
                             <Input
@@ -105,7 +105,7 @@ export function DashboardReleaseDialog({
                         </label>
 
                         <label className="grid gap-2">
-                            <span className="text-sm font-medium text-slate-700">
+                            <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
                                 Target date
                             </span>
                             <Input
@@ -122,7 +122,7 @@ export function DashboardReleaseDialog({
                     </div>
 
                     <label className="grid gap-2">
-                        <span className="text-sm font-medium text-slate-700">
+                        <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
                             Status
                         </span>
                         <select
@@ -133,7 +133,7 @@ export function DashboardReleaseDialog({
                                     status: event.target.value as ReleaseStatus,
                                 }))
                             }
-                            className="flex h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-xs transition outline-none focus-visible:border-sky-400"
+                            className="flex h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-xs transition outline-none focus-visible:border-sky-400 dark:border-slate-700 dark:bg-[#0f1728] dark:text-slate-100"
                         >
                             <option value="planned">Planned</option>
                             <option value="in-review">In review</option>
@@ -142,7 +142,7 @@ export function DashboardReleaseDialog({
                     </label>
 
                     <label className="grid gap-2">
-                        <span className="text-sm font-medium text-slate-700">
+                        <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
                             Summary
                         </span>
                         <textarea
@@ -155,12 +155,12 @@ export function DashboardReleaseDialog({
                             }
                             rows={3}
                             placeholder="Short note about what ships in this release."
-                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-xs transition outline-none focus-visible:border-sky-400"
+                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-xs transition outline-none focus-visible:border-sky-400 dark:border-slate-700 dark:bg-[#0f1728] dark:text-slate-100 dark:placeholder:text-slate-400"
                         />
                     </label>
                 </div>
 
-                <DialogFooter className="border-t border-slate-200/80 px-6 py-5">
+                <DialogFooter className="border-t border-slate-200/80 px-6 py-5 dark:border-slate-700/70">
                     <Button
                         variant="outline"
                         onClick={() => onOpenChange(false)}

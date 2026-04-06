@@ -1,10 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import {
-    CheckCircle2,
-    Palette,
-    ShieldCheck,
-    UserRound,
-} from 'lucide-react';
+import { CheckCircle2, Palette, ShieldCheck, UserRound } from 'lucide-react';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -94,8 +89,7 @@ export default function SettingsOverview() {
         },
         {
             title: 'Security',
-            description:
-                'Check password and two-factor protection settings.',
+            description: 'Check password and two-factor protection settings.',
             href: '/settings/security',
             icon: ShieldCheck,
             summary: 'Passwords and recovery settings',
@@ -103,8 +97,7 @@ export default function SettingsOverview() {
         },
         {
             title: 'Appearance',
-            description:
-                'Adjust theme preferences and interface appearance.',
+            description: 'Adjust theme preferences and interface appearance.',
             href: '/settings/appearance',
             icon: Palette,
             summary: 'Theme and display preferences',
@@ -129,17 +122,17 @@ export default function SettingsOverview() {
                     </section>
 
                     <section className="grid gap-5 xl:grid-cols-[minmax(0,1.6fr)_360px]">
-                        <Card className="border-slate-200 bg-white/95 shadow-sm">
+                        <Card className="border-slate-200 bg-white/95 shadow-sm dark:border-slate-700/60 dark:bg-[#111827] dark:shadow-[0_22px_45px_-34px_rgba(2,6,23,0.88)]">
                             <CardHeader className="gap-5">
                                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                                     <div>
-                                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-500">
+                                        <p className="text-xs font-semibold tracking-[0.18em] text-sky-500 uppercase">
                                             Account
                                         </p>
-                                        <CardTitle className="mt-2 text-2xl text-slate-900">
+                                        <CardTitle className="mt-2 text-2xl text-slate-900 dark:text-slate-100">
                                             {auth.user.name}
                                         </CardTitle>
-                                        <CardDescription className="mt-1 text-sm text-slate-500">
+                                        <CardDescription className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                                             {auth.user.email}
                                         </CardDescription>
                                     </div>
@@ -167,7 +160,7 @@ export default function SettingsOverview() {
                                             toneClasses[item.tone],
                                         )}
                                     >
-                                        <p className="text-xs font-semibold uppercase tracking-[0.16em]">
+                                        <p className="text-xs font-semibold tracking-[0.16em] uppercase">
                                             {item.label}
                                         </p>
                                         <p className="mt-3 text-base font-semibold">
@@ -178,9 +171,9 @@ export default function SettingsOverview() {
                             </CardContent>
                         </Card>
 
-                        <Card className="border-slate-200 bg-slate-50/90 shadow-sm">
+                        <Card className="border-slate-200 bg-slate-50/90 shadow-sm dark:border-slate-700/60 dark:bg-[#0f1728] dark:shadow-[0_22px_45px_-34px_rgba(2,6,23,0.88)]">
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-base text-slate-900">
+                                <CardTitle className="flex items-center gap-2 text-base text-slate-900 dark:text-slate-100">
                                     <CheckCircle2 className="size-4 text-sky-600" />
                                     Quick actions
                                 </CardTitle>
@@ -195,10 +188,10 @@ export default function SettingsOverview() {
                                         key={action.href}
                                         variant="outline"
                                         asChild
-                                        className="h-auto justify-start rounded-2xl border-slate-200 bg-white px-4 py-4 text-left text-slate-700"
+                                        className="h-auto justify-start rounded-2xl border-slate-200 bg-white px-4 py-4 text-left text-slate-700 dark:border-slate-700 dark:bg-[#162033] dark:text-slate-200 dark:hover:bg-[#1c2940]"
                                     >
                                         <Link href={action.href}>
-                                            <span className="block text-sm font-semibold text-slate-900">
+                                            <span className="block text-sm font-semibold text-slate-900 dark:text-slate-100">
                                                 {action.label}
                                             </span>
                                             {/* <span className="mt-1 block text-xs text-slate-500">
@@ -215,10 +208,10 @@ export default function SettingsOverview() {
                         {managementCards.map((card) => (
                             <Card
                                 key={card.title}
-                                className="border-slate-200 bg-white/95 shadow-sm"
+                                className="border-slate-200 bg-white/95 shadow-sm dark:border-slate-700/60 dark:bg-[#111827] dark:shadow-[0_22px_45px_-34px_rgba(2,6,23,0.88)]"
                             >
                                 <CardHeader>
-                                    <CardTitle className="flex items-center gap-2 text-base text-slate-900">
+                                    <CardTitle className="flex items-center gap-2 text-base text-slate-900 dark:text-slate-100">
                                         <card.icon className="size-4 text-sky-600" />
                                         {card.title}
                                     </CardTitle>
@@ -227,7 +220,7 @@ export default function SettingsOverview() {
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="flex h-full flex-col gap-4">
-                                    <p className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600">
+                                    <p className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600 dark:border-slate-700/60 dark:bg-[#0f1728] dark:text-slate-300">
                                         {card.summary}
                                     </p>
                                     <Button

@@ -13,7 +13,7 @@ export default function AppSidebarLayout({
             <AppSidebar />
             <AppContent
                 variant="sidebar"
-                className="overflow-x-hidden bg-[#eef2f7]"
+                className="overflow-x-hidden bg-[#eef2f7] dark:bg-[#0b1220]"
             >
                 {breadcrumbs.length > 1 ? (
                     <AppSidebarHeader breadcrumbs={breadcrumbs} />
