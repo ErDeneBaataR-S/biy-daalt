@@ -12,6 +12,11 @@ import type { NavItem } from '@/types';
 
 const sidebarNavItems: NavItem[] = [
     {
+        title: 'Overview',
+        href: '/settings',
+        icon: null,
+    },
+    {
         title: 'Profile',
         href: edit(),
         icon: null,
@@ -43,8 +48,8 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                 description="Manage your profile and account settings"
             />
 
-            <div className="flex flex-col lg:flex-row lg:space-x-12">
-                <aside className="w-full max-w-xl lg:w-48">
+            <div className="mt-6 grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:items-start xl:gap-10">
+                <aside className="w-full lg:sticky lg:top-6">
                     <nav
                         className="flex flex-col space-y-1 space-x-0"
                         aria-label="Settings"
@@ -72,10 +77,8 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
 
                 <Separator className="my-6 lg:hidden" />
 
-                <div className="flex-1 md:max-w-2xl">
-                    <section className="max-w-xl space-y-12">
-                        {children}
-                    </section>
+                <div className="min-w-0">
+                    <section className="space-y-12">{children}</section>
                 </div>
             </div>
         </div>

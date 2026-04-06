@@ -1,0 +1,351 @@
+import { Head } from '@inertiajs/react';
+import {
+    ArrowRight,
+    BarChart3,
+    MessageSquareMore,
+    PackageCheck,
+    TrendingUp,
+} from 'lucide-react';
+import Heading from '@/components/heading';
+import { Badge } from '@/components/ui/badge';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
+import AppLayout from '@/layouts/app-layout';
+import { cn } from '@/lib/utils';
+import type { BreadcrumbItem } from '@/types';
+import type {
+    AnalyticsBreakdownItem,
+    AnalyticsInsight,
+    AnalyticsMetric,
+    AnalyticsSeriesPoint,
+} from '@/types/analytics';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Analytics',
+        href: '/analytics',
+    },
+];
+
+const metrics: AnalyticsMetric[] = [
+    {
+        label: 'New backlog items',
+        value: '24',
+        helper: 'Captured this month',
+        delta: '+6 vs last month',
+    },
+    {
+        label: 'Feedback received',
+        value: '58',
+        helper: 'Across product channels',
+        delta: '+18%',
+    },
+    {
+        label: 'Releases shipped',
+        value: '4',
+        helper: 'Completed in the current window',
+        delta: '+1',
+    },
+    {
+        label: 'Close rate',
+        value: '71%',
+        helper: 'Feedback and backlog items resolved',
+        delta: '+9 pts',
+    },
+];
+
+const backlogSeries: AnalyticsSeriesPoint[] = [
+    { label: 'Jan', value: 12 },
+    { label: 'Feb', value: 18 },
+    { label: 'Mar', value: 22 },
+    { label: 'Apr', value: 24 },
+];
+
+const feedbackSeries: AnalyticsSeriesPoint[] = [
+    { label: 'Jan', value: 26 },
+    { label: 'Feb', value: 31 },
+    { label: 'Mar', value: 44 },
+    { label: 'Apr', value: 58 },
+];
+
+const breakdownItems: AnalyticsBreakdownItem[] = [
+    { label: 'Planned', value: '19 items', tone: 'sky' },
+    { label: 'In review', value: '8 items', tone: 'amber' },
+    { label: 'Shipped', value: '11 items', tone: 'emerald' },
+    { label: 'Queued', value: '6 items', tone: 'slate' },
+];
+
+const insights: AnalyticsInsight[] = [
+    {
+        title: 'Feedback volume accelerated',
+        description:
+            'Customer input rose sharply through March and remained elevated into April.',
+    },
+    {
+        title: 'Backlog intake stayed healthy',
+        description:
+            'Backlog growth increased steadily without a sudden spike that would suggest triage debt.',
+    },
+    {
+        title: 'Release cadence is stable',
+        description:
+            'Recent delivery volume supports a consistent throughput view rather than stop-start shipping.',
+    },
+];
+
+const toneClasses = {
+    sky: 'border-sky-200 bg-sky-50 text-sky-700',
+    emerald: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+    amber: 'border-amber-200 bg-amber-50 text-amber-700',
+    slate: 'border-slate-200 bg-slate-50 text-slate-700',
+} as const;
+
+function TrendBars({
+    points,
+    colorClass,
+}: {
+    points: AnalyticsSeriesPoint[];
+    colorClass: string;
+}) {
+    const maxValue = Math.max(...points.map((point) => point.value), 1);
+
+    return (
+        <div className="grid grid-cols-4 gap-3">
+            {points.map((point) => (
+                <div key={point.label} className="space-y-2">
+                    <div className="flex h-32 items-end rounded-2xl bg-slate-100 p-2">
+                        <div
+                            className={cn(
+                                'w-full rounded-xl transition-all',
+                                colorClass,
+                            )}
+                            style={{
+                                height: `${Math.max(
+                                    18,
+                                    Math.round((point.value / maxValue) * 100),
+                                )}%`,
+                            }}
+                        />
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-slate-500">
+                        <span>{point.label}</span>
+                        <span className="font-medium text-slate-700">
+                            {point.value}
+                        </span>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+export default function Analytics() {
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Analytics" />
+
+            <div className="space-y-6 px-4 py-6">
+                <section>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-500">
+                        Product operations
+                    </p>
+                    <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
+                        <div>
+                            <h1 className="text-[1.9rem] font-semibold tracking-[-0.04em] text-slate-900">
+                                Analytics
+                            </h1>
+                            <p className="mt-1 text-sm text-slate-500">
+                                Trends, conversions, and workflow signals across
+                                backlog, feedback, and releases.
+                            </p>
+                        </div>
+                        <Badge
+                            variant="outline"
+                            className="rounded-full border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-500"
+                        >
+                            Last 30 days
+                        </Badge>
+                    </div>
+                </section>
+
+                <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                    {metrics.map((metric) => (
+                        <Card
+                            key={metric.label}
+                            className="border-slate-200 bg-white/95 shadow-sm"
+                        >
+                            <CardHeader className="gap-3">
+                                <CardDescription className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                                    {metric.label}
+                                </CardDescription>
+                                <div className="flex items-end justify-between gap-3">
+                                    <CardTitle className="text-3xl text-slate-900">
+                                        {metric.value}
+                                    </CardTitle>
+                                    {metric.delta && (
+                                        <span className="text-xs font-semibold text-emerald-600">
+                                            {metric.delta}
+                                        </span>
+                                    )}
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-slate-500">
+                                    {metric.helper}
+                                </p>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </section>
+
+                <section className="grid gap-4 xl:grid-cols-2">
+                    <Card className="border-slate-200 bg-white/95 shadow-sm">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-base text-slate-900">
+                                <BarChart3 className="size-4 text-sky-600" />
+                                Backlog growth
+                            </CardTitle>
+                            <CardDescription>
+                                Intake stayed active across the current
+                                reporting window.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <TrendBars
+                                points={backlogSeries}
+                                colorClass="bg-sky-500"
+                            />
+                        </CardContent>
+                    </Card>
+
+                    <Card className="border-slate-200 bg-white/95 shadow-sm">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-base text-slate-900">
+                                <MessageSquareMore className="size-4 text-amber-600" />
+                                Feedback trend
+                            </CardTitle>
+                            <CardDescription>
+                                User feedback volume has been increasing faster
+                                than backlog intake.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <TrendBars
+                                points={feedbackSeries}
+                                colorClass="bg-amber-500"
+                            />
+                        </CardContent>
+                    </Card>
+                </section>
+
+                <section className="grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]">
+                    <Card className="border-slate-200 bg-white/95 shadow-sm">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-base text-slate-900">
+                                <ArrowRight className="size-4 text-sky-600" />
+                                Workflow conversion
+                            </CardTitle>
+                            <CardDescription>
+                                Track how signals move from feedback into
+                                backlog and from backlog into shipped work.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="grid gap-4 md:grid-cols-2">
+                            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                                    Feedback to backlog
+                                </p>
+                                <p className="mt-3 text-3xl font-semibold text-slate-900">
+                                    41%
+                                </p>
+                                <p className="mt-2 text-sm text-slate-500">
+                                    24 backlog items came from 58 tracked
+                                    feedback submissions.
+                                </p>
+                            </div>
+                            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                                    Backlog to release
+                                </p>
+                                <p className="mt-3 text-3xl font-semibold text-slate-900">
+                                    17%
+                                </p>
+                                <p className="mt-2 text-sm text-slate-500">
+                                    4 recent releases shipped against the
+                                    active tracked work in the current cycle.
+                                </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="border-slate-200 bg-white/95 shadow-sm">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-base text-slate-900">
+                                <PackageCheck className="size-4 text-emerald-600" />
+                                Status breakdown
+                            </CardTitle>
+                            <CardDescription>
+                                Distribution snapshot across the current work
+                                pipeline.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            {breakdownItems.map((item) => (
+                                <div
+                                    key={item.label}
+                                    className={cn(
+                                        'rounded-2xl border px-4 py-3',
+                                        toneClasses[item.tone],
+                                    )}
+                                >
+                                    <div className="flex items-center justify-between gap-3">
+                                        <span className="text-sm font-semibold">
+                                            {item.label}
+                                        </span>
+                                        <span className="text-sm">
+                                            {item.value}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+                </section>
+
+                <section>
+                    <Card className="border-slate-200 bg-white/95 shadow-sm">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-base text-slate-900">
+                                <TrendingUp className="size-4 text-sky-600" />
+                                Insights
+                            </CardTitle>
+                            <CardDescription>
+                                Short takeaways derived from the visible trend
+                                and throughput metrics.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="grid gap-3 xl:grid-cols-3">
+                            {insights.map((insight) => (
+                                <div
+                                    key={insight.title}
+                                    className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4"
+                                >
+                                    <Heading
+                                        variant="small"
+                                        title={insight.title}
+                                        description={insight.description}
+                                    />
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+                </section>
+            </div>
+        </AppLayout>
+    );
+}

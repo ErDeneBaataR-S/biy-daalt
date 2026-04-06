@@ -25,7 +25,11 @@ type Props = {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Security settings',
+        title: 'Settings',
+        href: '/settings',
+    },
+    {
+        title: 'Security',
         href: edit(),
     },
 ];
