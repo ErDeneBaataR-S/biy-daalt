@@ -8,7 +8,11 @@ import type { BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Appearance settings',
+        title: 'Settings',
+        href: '/settings',
+    },
+    {
+        title: 'Appearance',
         href: editAppearance(),
     },
 ];

@@ -52,9 +52,8 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Analytics',
-        href: '#analytics',
+        href: '/analytics',
         icon: ChartColumnBig,
-        disabled: true,
     },
     {
         title: 'Docs',
@@ -63,9 +62,8 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Settings',
-        href: '#settings',
+        href: '/settings',
         icon: Settings,
-        disabled: true,
     },
 ];
 

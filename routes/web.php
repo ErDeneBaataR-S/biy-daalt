@@ -13,6 +13,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('roadmap', 'roadmap')->name('roadmap');
     Route::inertia('feedback', 'Feedback')->name('feedback');
     Route::inertia('releases', 'Releases')->name('releases');
+    Route::inertia('analytics', 'analytics')->name('analytics');
     Route::inertia('docs', 'Docs')->name('docs');
 });
 

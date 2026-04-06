@@ -12,6 +12,16 @@ test('profile page is displayed', function () {
     $response->assertOk();
 });
 
+test('settings overview route does not replace the profile page route', function () {
+    $user = User::factory()->create();
+
+    $response = $this
+        ->actingAs($user)
+        ->get(route('profile.edit'));
+
+    $response->assertOk();
+});
+
 test('profile information can be updated', function () {
     $user = User::factory()->create();
 

@@ -15,7 +15,11 @@ import type { BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Profile settings',
+        title: 'Settings',
+        href: '/settings',
+    },
+    {
+        title: 'Profile',
         href: edit(),
     },
 ];
