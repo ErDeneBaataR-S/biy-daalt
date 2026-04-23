@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -73,6 +74,17 @@ class User extends Authenticatable
     public function hasRole(string $role): bool
     {
         return $this->role === $role;
+    }
+
+    public function setRoleAttribute(?string $role): void
+    {
+        $role ??= self::ROLE_EMPLOYEE;
+
+        if (! in_array($role, self::roles(), true)) {
+            throw new InvalidArgumentException("Unsupported role [{$role}].");
+        }
+
+        $this->attributes['role'] = $role;
     }
 
     public function isAdmin(): bool

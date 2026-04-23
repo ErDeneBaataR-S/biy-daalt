@@ -28,10 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if (Schema::hasColumn('users', 'role')) {
-            Schema::table('users', function (Blueprint $table) {
-                $table->dropColumn('role');
-            });
-        }
+        // Transitional migration only: the base users migration now owns the column.
     }
 };
