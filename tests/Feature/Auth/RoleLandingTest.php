@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Inertia\Testing\AssertableInertia as Assert;
 use Illuminate\Support\Facades\Schema;
 
 test('user factory can create each supported role', function () {
@@ -44,4 +45,26 @@ test('transitional role migration rollback preserves role column', function () {
     }
 
     expect($roleColumnExistsAfterRollback)->toBeTrue();
+});
+
+test('admin is redirected to the dashboard after hitting the landing route', function () {
+    $user = User::factory()->admin()->create();
+
+    $this->actingAs($user)
+        ->get(route('home'))
+        ->assertRedirect(route('dashboard'));
+});
+
+test('employee inertia props include role and capability flags', function () {
+    $user = User::factory()->employee()->create();
+
+    $this->actingAs($user)
+        ->get(route('dashboard'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('auth.user.role', User::ROLE_EMPLOYEE)
+            ->where('auth.capabilities.access_admin', false)
+            ->where('auth.capabilities.manage_projects', false)
+            ->where('auth.capabilities.create_personal_tasks', true)
+            ->where('auth.capabilities.view_company_updates', true)
+        );
 });

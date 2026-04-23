@@ -1,11 +1,24 @@
 <?php
 
+use App\Support\RoleHome;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use Laravel\Fortify\Features;
+use Inertia\Inertia;
 
-Route::inertia('/', 'welcome', [
-    'canRegister' => Features::enabled(Features::registration()),
-])->name('home');
+Route::get('/', function (Request $request) {
+    if ($request->user()) {
+        return redirect()->route(RoleHome::routeNameFor($request->user()));
+    }
+
+    return Inertia::render('welcome', [
+        'canRegister' => Features::enabled(Features::registration()),
+    ]);
+})->name('home');
+
+Route::get('/home', function (Request $request) {
+    return redirect()->route(RoleHome::routeNameFor($request->user()));
+})->middleware(['auth', 'verified'])->name('app.home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
