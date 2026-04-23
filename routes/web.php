@@ -21,7 +21,9 @@ Route::get('/home', function (Request $request) {
 })->middleware(['auth', 'verified'])->name('app.home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::inertia('admin', 'dashboard')->name('admin.overview');
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::inertia('my-dashboard', 'dashboard')->name('my-dashboard');
     Route::inertia('backlog', 'backlog')->name('backlog');
     Route::inertia('roadmap', 'roadmap')->name('roadmap');
     Route::inertia('feedback', 'Feedback')->name('feedback');

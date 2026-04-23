@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Support\RoleHome;
 use Inertia\Testing\AssertableInertia as Assert;
 use Illuminate\Support\Facades\Schema;
 
@@ -47,12 +48,29 @@ test('transitional role migration rollback preserves role column', function () {
     expect($roleColumnExistsAfterRollback)->toBeTrue();
 });
 
-test('admin is redirected to the dashboard after hitting the landing route', function () {
+test('role home resolves the planned route names for each role', function () {
+    expect(RoleHome::routeNameFor(User::factory()->admin()->make()))
+        ->toBe('admin.overview')
+        ->and(RoleHome::routeNameFor(User::factory()->manager()->make()))
+        ->toBe('dashboard')
+        ->and(RoleHome::routeNameFor(User::factory()->employee()->make()))
+        ->toBe('my-dashboard');
+});
+
+test('admin is redirected to the admin overview after hitting the landing route', function () {
     $user = User::factory()->admin()->create();
 
     $this->actingAs($user)
         ->get(route('home'))
-        ->assertRedirect(route('dashboard'));
+        ->assertRedirect(route('admin.overview'));
+});
+
+test('employee is redirected to my dashboard after hitting the landing route', function () {
+    $user = User::factory()->employee()->create();
+
+    $this->actingAs($user)
+        ->get(route('home'))
+        ->assertRedirect(route('my-dashboard'));
 });
 
 test('employee inertia props include role and capability flags', function () {

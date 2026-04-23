@@ -9,9 +9,9 @@ class RoleHome
     public static function routeNameFor(User $user): string
     {
         return match ($user->role) {
-            User::ROLE_ADMIN => 'dashboard',
+            User::ROLE_ADMIN => 'admin.overview',
             User::ROLE_MANAGER => 'dashboard',
-            default => 'dashboard',
+            default => 'my-dashboard',
         };
     }
 
