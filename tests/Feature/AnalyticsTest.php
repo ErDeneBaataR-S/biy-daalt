@@ -9,8 +9,8 @@ test('guests are redirected to the login page from analytics', function () {
     $response->assertRedirect(route('login'));
 });
 
-test('authenticated users can visit the analytics inertia page', function () {
-    $user = User::factory()->create();
+test('manager can visit the analytics inertia page', function () {
+    $user = User::factory()->manager()->create();
 
     $this->actingAs($user);
 
@@ -22,4 +22,12 @@ test('authenticated users can visit the analytics inertia page', function () {
         ->where('auth.user.id', $user->id)
         ->where('auth.user.email', $user->email)
     );
+});
+
+test('employee is redirected away from analytics', function () {
+    $user = User::factory()->employee()->create();
+
+    $this->actingAs($user)
+        ->get(route('analytics'))
+        ->assertForbidden();
 });

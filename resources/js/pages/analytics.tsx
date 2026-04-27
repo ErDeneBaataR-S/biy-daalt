@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import {
     ArrowRight,
     BarChart3,
@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
-import type { BreadcrumbItem } from '@/types';
+import type { Auth, BreadcrumbItem } from '@/types';
 import type {
     AnalyticsBreakdownItem,
     AnalyticsInsight,
@@ -146,23 +146,31 @@ function TrendBars({
 }
 
 export default function Analytics() {
+    const { auth } = usePage<{ auth: Auth }>().props;
+    const isAdmin = auth.user.role === 'admin';
+    const pageTitle = isAdmin
+        ? 'Organization Analytics'
+        : 'Delivery Analytics';
+    const pageDescription = isAdmin
+        ? 'Organization-wide trends, portfolio visibility, and workflow signals across backlog, feedback, and releases.'
+        : 'Delivery-focused trends and workflow signals across backlog, feedback, and releases.';
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Analytics" />
+            <Head title={pageTitle} />
 
             <div className="space-y-6 px-4 py-6">
                 <section>
                     <p className="text-xs font-semibold tracking-[0.18em] text-sky-500 uppercase">
-                        Product operations
+                        {isAdmin ? 'Organization intelligence' : 'Delivery intelligence'}
                     </p>
                     <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
                         <div>
                             <h1 className="text-[1.9rem] font-semibold tracking-[-0.04em] text-slate-900 dark:text-slate-100">
-                                Analytics
+                                {pageTitle}
                             </h1>
                             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                                Trends, conversions, and workflow signals across
-                                backlog, feedback, and releases.
+                                {pageDescription}
                             </p>
                         </div>
                         <Badge
@@ -291,8 +299,9 @@ export default function Analytics() {
                                 Status breakdown
                             </CardTitle>
                             <CardDescription>
-                                Distribution snapshot across the current work
-                                pipeline.
+                                {isAdmin
+                                    ? 'Distribution snapshot across the organization work pipeline.'
+                                    : 'Distribution snapshot across the current delivery pipeline.'}
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-3">
@@ -326,8 +335,9 @@ export default function Analytics() {
                                 Insights
                             </CardTitle>
                             <CardDescription>
-                                Short takeaways derived from the visible trend
-                                and throughput metrics.
+                                {isAdmin
+                                    ? 'Short takeaways derived from organization-wide trend and throughput metrics.'
+                                    : 'Short takeaways derived from delivery trend and throughput metrics.'}
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="grid gap-3 xl:grid-cols-3">

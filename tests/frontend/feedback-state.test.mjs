@@ -1,5 +1,5 @@
-import test from 'node:test';
 import assert from 'node:assert/strict';
+import test from 'node:test';
 import {
     createDefaultFeedback,
     isDeadlineOverdue,
@@ -35,4 +35,3 @@ test('createDefaultFeedback uses the provided date for stable defaults', () => {
     assert.equal(feedback.priority, 'Medium');
     assert.equal(feedback.deadline, '2026-04-05');
 });
-

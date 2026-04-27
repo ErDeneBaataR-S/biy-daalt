@@ -53,6 +53,7 @@ export default function SettingsOverview() {
                 name: string;
                 email: string;
                 email_verified_at: string | null;
+                role: 'admin' | 'manager' | 'employee';
             };
         };
     };
@@ -234,6 +235,34 @@ export default function SettingsOverview() {
                                 </CardContent>
                             </Card>
                         ))}
+                        {auth.user.role === 'admin' && (
+                            <Card className="border-slate-200 bg-white/95 shadow-sm dark:border-slate-700/60 dark:bg-[#111827] dark:shadow-[0_22px_45px_-34px_rgba(2,6,23,0.88)]">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2 text-base text-slate-900 dark:text-slate-100">
+                                        <ShieldCheck className="size-4 text-sky-600" />
+                                        System settings
+                                    </CardTitle>
+                                    <CardDescription>
+                                        Admin-only controls for platform access,
+                                        policy, and broader workspace behavior.
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent className="flex h-full flex-col gap-4">
+                                    <p className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600 dark:border-slate-700/60 dark:bg-[#0f1728] dark:text-slate-300">
+                                        This placeholder keeps system-level
+                                        administration distinct from personal
+                                        account settings.
+                                    </p>
+                                    <Button
+                                        variant="outline"
+                                        className="mt-auto w-full rounded-xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#162033] dark:text-slate-200 dark:hover:bg-[#1c2940]"
+                                        disabled
+                                    >
+                                        Coming soon
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        )}
                     </section>
                 </div>
             </SettingsLayout>

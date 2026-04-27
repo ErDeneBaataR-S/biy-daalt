@@ -52,7 +52,7 @@ test('role home resolves the planned route names for each role', function () {
     expect(RoleHome::routeNameFor(User::factory()->admin()->make()))
         ->toBe('admin.overview')
         ->and(RoleHome::routeNameFor(User::factory()->manager()->make()))
-        ->toBe('dashboard')
+        ->toBe('my-dashboard')
         ->and(RoleHome::routeNameFor(User::factory()->employee()->make()))
         ->toBe('my-dashboard');
 });
@@ -67,6 +67,14 @@ test('admin is redirected to the admin overview after hitting the landing route'
 
 test('employee is redirected to my dashboard after hitting the landing route', function () {
     $user = User::factory()->employee()->create();
+
+    $this->actingAs($user)
+        ->get(route('home'))
+        ->assertRedirect(route('my-dashboard'));
+});
+
+test('manager is redirected to my dashboard after hitting the landing route', function () {
+    $user = User::factory()->manager()->create();
 
     $this->actingAs($user)
         ->get(route('home'))

@@ -1,14 +1,4 @@
-import { Link } from '@inertiajs/react';
-import {
-    BookOpenText,
-    CalendarRange,
-    ChartColumnBig,
-    LayoutGrid,
-    ListTodo,
-    MessageSquareMore,
-    Settings,
-    Sparkles,
-} from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -21,53 +11,14 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { backlog, dashboard } from '@/routes';
-import type { NavItem } from '@/types';
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Roadmap',
-        href: '/roadmap',
-        icon: Sparkles,
-    },
-    {
-        title: 'Backlog',
-        href: backlog(),
-        icon: ListTodo,
-    },
-    {
-        title: 'Feedback',
-        href: '/feedback',
-        icon: MessageSquareMore,
-    },
-    {
-        title: 'Releases',
-        href: '/releases',
-        icon: CalendarRange,
-    },
-    {
-        title: 'Analytics',
-        href: '/analytics',
-        icon: ChartColumnBig,
-    },
-    {
-        title: 'Docs',
-        href: '/docs',
-        icon: BookOpenText,
-    },
-    {
-        title: 'Settings',
-        href: '/settings',
-        icon: Settings,
-    },
-];
+import { getSidebarItems } from '@/lib/navigation';
+import type { Auth } from '@/types';
 
 export function AppSidebar() {
+    const { auth } = usePage<{ auth: Auth }>().props;
+    const mainNavItems = getSidebarItems(auth.user.role);
+    const homeHref = mainNavItems[0]?.href ?? '/dashboard';
+
     return (
         <Sidebar
             collapsible="icon"
@@ -83,7 +34,7 @@ export function AppSidebar() {
                             className="h-auto rounded-2xl border border-white/70 bg-white/90 p-2 shadow-[0_18px_40px_-38px_rgba(15,23,42,0.9)] hover:bg-white data-[active=true]:bg-white dark:border-slate-700/60 dark:bg-[#111a2b]/95 dark:hover:bg-[#162033] dark:data-[active=true]:bg-[#162033]"
                         >
                             <Link
-                                href={dashboard()}
+                                href={homeHref}
                                 prefetch
                                 className="rounded-2xl"
                             >

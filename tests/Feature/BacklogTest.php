@@ -8,8 +8,8 @@ test('guests are redirected to the login page', function () {
     $response->assertRedirect(route('login'));
 });
 
-test('authenticated users can visit the backlog inertia page', function () {
-    $user = User::factory()->create();
+test('manager can visit the backlog inertia page', function () {
+    $user = User::factory()->manager()->create();
     $this->actingAs($user);
 
     $response = $this->get(route('backlog'));
@@ -19,4 +19,12 @@ test('authenticated users can visit the backlog inertia page', function () {
         ->component('backlog')
         ->where('auth.user.id', $user->id)
     );
+});
+
+test('employee cannot use manager backlog route as a primary workspace', function () {
+    $user = User::factory()->employee()->create();
+
+    $this->actingAs($user)
+        ->get(route('backlog'))
+        ->assertForbidden();
 });

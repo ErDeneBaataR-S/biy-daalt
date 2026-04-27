@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import {
     BellRing,
     BriefcaseBusiness,
@@ -20,7 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
-import type { BreadcrumbItem } from '@/types';
+import type { Auth, BreadcrumbItem } from '@/types';
 import type {
     Initiative,
     InitiativeDraft,
@@ -175,6 +175,7 @@ function getReleaseTone(status: ReleaseStatus) {
 }
 
 export default function Dashboard() {
+    const { auth } = usePage<{ auth: Auth }>().props;
     const [{ initiatives: initialInitiatives, releases: initialReleases }] =
         useState(readDashboardData);
     const [searchValue, setSearchValue] = useState('');
@@ -278,6 +279,13 @@ export default function Dashboard() {
         },
     ];
 
+    const workspaceLabel =
+        auth.user.role === 'manager' ? 'Manager workspace' : 'Product workspace';
+    const workspaceDescription =
+        auth.user.role === 'manager'
+            ? 'Planning-focused overview with local CRUD for initiatives and releases.'
+            : 'Frontend-only overview with local CRUD for initiatives and releases.';
+
     const handleCreateInitiative = (draft: InitiativeDraft) => {
         setInitiatives((current) => [
             {
@@ -354,7 +362,7 @@ export default function Dashboard() {
             >
                 <section>
                     <p className="text-xs font-semibold tracking-[0.18em] text-sky-500 uppercase">
-                        Product workspace
+                        {workspaceLabel}
                     </p>
                     <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
                         <div>
@@ -362,8 +370,7 @@ export default function Dashboard() {
                                 Dashboard
                             </h1>
                             <p className="mt-1 text-sm text-slate-500">
-                                Frontend-only overview with local CRUD for
-                                initiatives and releases.
+                                {workspaceDescription}
                             </p>
                         </div>
                         <div className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-500">
