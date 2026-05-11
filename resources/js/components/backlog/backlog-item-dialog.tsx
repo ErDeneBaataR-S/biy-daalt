@@ -106,8 +106,8 @@ export function BacklogItemDialog({
                     <DialogHeader>
                         <DialogTitle>{title}</DialogTitle>
                         <DialogDescription>
-                            Update the backlog item details for the
-                            frontend-only workspace.
+                            Update the backlog item details for the shared
+                            product workspace.
                         </DialogDescription>
                     </DialogHeader>
 

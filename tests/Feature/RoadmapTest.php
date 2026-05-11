@@ -10,7 +10,7 @@ test('guests are redirected to the login page', function () {
 });
 
 test('authenticated users can visit the roadmap inertia page', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->manager()->create();
 
     $this->withoutVite();
     $this->actingAs($user);
@@ -21,6 +21,6 @@ test('authenticated users can visit the roadmap inertia page', function () {
     $response->assertInertia(fn (Assert $page) => $page
         ->component('roadmap')
         ->where('auth.user.id', $user->id)
-        ->missing('items')
+        ->has('items')
     );
 });

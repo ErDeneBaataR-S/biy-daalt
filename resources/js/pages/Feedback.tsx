@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react';
+import { router, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import {
     createDefaultFeedback,
-    FEEDBACK_STORAGE_KEY,
     feedbackPriorityOptions,
     feedbackStatusOptions,
     getFeedbackPriorityColor,
     isDeadlineOverdue,
-    loadFeedbacks,
 } from '@/pages/feedback-state';
 
 type FeedbackItem = {
@@ -20,44 +18,27 @@ type FeedbackItem = {
 };
 
 export default function Feedback() {
-    const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>(() => {
-        if (typeof window === 'undefined') {
-            return [];
-        }
-
-        return loadFeedbacks(window.localStorage.getItem(FEEDBACK_STORAGE_KEY));
-    });
-
-    useEffect(() => {
-        if (typeof window === 'undefined') {
-            return;
-        }
-
-        window.localStorage.setItem(
-            FEEDBACK_STORAGE_KEY,
-            JSON.stringify(feedbacks),
-        );
-    }, [feedbacks]);
+    const { items: feedbacks } = usePage<{ items: FeedbackItem[] }>().props;
 
     const addFeedback = () => {
-        setFeedbacks((current) => [...current, createDefaultFeedback()]);
+        router.post('/feedback', createDefaultFeedback(), {
+            preserveScroll: true,
+        });
     };
 
     const deleteFeedback = (id: number) => {
-        setFeedbacks((current) =>
-            current.filter((feedback) => feedback.id !== id),
-        );
+        router.delete(`/feedback/${id}`, {
+            preserveScroll: true,
+        });
     };
 
     const updateFeedback = (
         id: number,
         updated: Partial<Pick<FeedbackItem, 'status' | 'priority'>>,
     ) => {
-        setFeedbacks((current) =>
-            current.map((feedback) =>
-                feedback.id === id ? { ...feedback, ...updated } : feedback,
-            ),
-        );
+        router.patch(`/feedback/${id}`, updated, {
+            preserveScroll: true,
+        });
     };
 
     const columns = feedbackStatusOptions.map((status) => ({

@@ -6,12 +6,11 @@ import {
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Head } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { Head, router, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 import { RoadmapDialog } from '@/components/roadmap/roadmap-dialog';
 import { RoadmapShell } from '@/components/roadmap/roadmap-shell';
 import AppLayout from '@/layouts/app-layout';
-import { roadmap } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 
 type Status = 'now' | 'next' | 'later';
@@ -20,6 +19,7 @@ type Item = {
     id: number;
     title: string;
     status: Status;
+    position: number;
 };
 
 type ColumnProps = {
@@ -40,95 +40,24 @@ type CardProps = {
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Roadmap',
-        href: roadmap(),
-    },
-];
-
-const storageKey = 'biydaalt.roadmap.v1';
-
-const defaultItems: Item[] = [
-    {
-        id: 101,
-        title: 'Refine the onboarding flow',
-        status: 'now',
-    },
-    {
-        id: 102,
-        title: 'Ship feedback collection',
-        status: 'now',
-    },
-    {
-        id: 201,
-        title: 'Draft release milestones',
-        status: 'next',
-    },
-    {
-        id: 202,
-        title: 'Align cross-team dependencies',
-        status: 'next',
-    },
-    {
-        id: 301,
-        title: 'Explore customer-facing timeline views',
-        status: 'later',
+        href: '/roadmap',
     },
 ];
 
 const validStatuses: Status[] = ['now', 'next', 'later'];
 
-function createId() {
-    return Math.floor(Date.now() + Math.random() * 1000);
-}
-
 function isStatus(value: unknown): value is Status {
     return typeof value === 'string' && validStatuses.includes(value as Status);
 }
 
-function readRoadmapData() {
-    if (typeof window === 'undefined') {
-        return defaultItems;
-    }
-
-    try {
-        const raw = window.localStorage.getItem(storageKey);
-
-        if (!raw) {
-            return defaultItems;
-        }
-
-        const parsed = JSON.parse(raw) as { items?: Item[] };
-
-        return Array.isArray(parsed.items) &&
-            parsed.items.every(
-                (item) =>
-                    typeof item?.id === 'number' &&
-                    typeof item?.title === 'string' &&
-                    isStatus(item?.status),
-            )
-            ? parsed.items
-            : defaultItems;
-    } catch {
-        return defaultItems;
-    }
-}
+type RoadmapPageProps = {
+    items: Item[];
+};
 
 export default function Roadmap() {
-    const [initialItems] = useState(readRoadmapData);
-    const [items, setItems] = useState<Item[]>(initialItems);
+    const { items } = usePage<RoadmapPageProps>().props;
     const [open, setOpen] = useState(false);
     const [editing, setEditing] = useState<Item | null>(null);
-
-    useEffect(() => {
-        if (typeof window === 'undefined') {
-            return;
-        }
-
-        try {
-            window.localStorage.setItem(storageKey, JSON.stringify({ items }));
-        } catch {
-            return;
-        }
-    }, [items]);
 
     const handleClose = () => {
         setOpen(false);
@@ -137,27 +66,30 @@ export default function Roadmap() {
 
     const handleSubmit = (title: string, status: Item['status']) => {
         if (editing) {
-            setItems((current) =>
-                current.map((item) =>
-                    item.id === editing.id ? { ...item, title, status } : item,
-                ),
+            router.patch(
+                `/roadmap/${editing.id}`,
+                { title, status },
+                {
+                    preserveScroll: true,
+                },
             );
 
             return;
         }
 
-        setItems((current) => [
+        router.post(
+            '/roadmap',
+            { title, status },
             {
-                id: createId(),
-                title,
-                status,
+                preserveScroll: true,
             },
-            ...current,
-        ]);
+        );
     };
 
     const handleDelete = (id: number) => {
-        setItems((current) => current.filter((item) => item.id !== id));
+        router.delete(`/roadmap/${id}`, {
+            preserveScroll: true,
+        });
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
@@ -167,19 +99,24 @@ export default function Roadmap() {
             return;
         }
 
-        setItems((current) =>
-            current.map((item) => {
-                if (item.id !== active.id) {
-                    return item;
-                }
+        const activeItem = items.find((item) => item.id === active.id);
+        const nextStatus = isStatus(over.id)
+            ? over.id
+            : items.find((candidate) => candidate.id === over.id)?.status;
 
-                const nextStatus = isStatus(over.id)
-                    ? over.id
-                    : current.find((candidate) => candidate.id === over.id)
-                          ?.status;
+        if (!activeItem || !nextStatus) {
+            return;
+        }
 
-                return nextStatus ? { ...item, status: nextStatus } : item;
-            }),
+        router.patch(
+            `/roadmap/${activeItem.id}/move`,
+            {
+                status: nextStatus,
+                position: activeItem.position,
+            },
+            {
+                preserveScroll: true,
+            },
         );
     };
 
