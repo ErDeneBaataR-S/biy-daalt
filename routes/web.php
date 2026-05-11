@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AccessController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\BacklogItemController;
 use App\Http\Controllers\FeedbackItemController;
 use App\Http\Controllers\ProductReleaseController;
@@ -25,8 +27,13 @@ Route::get('/home', function (Request $request) {
     return redirect()->route(RoleHome::routeNameFor($request->user()));
 })->middleware(['auth', 'verified'])->name('app.home');
 
-Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::inertia('admin', 'admin/overview')->name('admin.overview');
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::inertia('', 'admin/overview')->name('overview');
+    Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::post('users', [AdminUserController::class, 'store'])->name('users.store');
+    Route::patch('users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role.update');
+    Route::delete('users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+    Route::get('access', AccessController::class)->name('access');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
