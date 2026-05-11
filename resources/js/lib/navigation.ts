@@ -25,13 +25,11 @@ export function getSidebarItems(role: UserRole): NavItem[] {
                 title: 'Users',
                 href: '/admin/users',
                 icon: UserCog,
-                disabled: true,
             },
             {
                 title: 'Roles / Access',
                 href: '/admin/access',
                 icon: Shield,
-                disabled: true,
             },
             {
                 title: 'Projects',
