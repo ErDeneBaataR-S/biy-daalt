@@ -1,10 +1,6 @@
-import { useEffect, useState } from 'react';
+import { router, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
-import {
-    createRelease,
-    loadReleases,
-    RELEASES_STORAGE_KEY,
-} from '@/pages/releases-state';
 
 type ReleaseItem = {
     id: number;
@@ -14,40 +10,33 @@ type ReleaseItem = {
 };
 
 export default function Releases() {
-    const [releases, setReleases] = useState<ReleaseItem[]>(() => {
-        if (typeof window === 'undefined') {
-            return loadReleases(null);
-        }
-
-        return loadReleases(window.localStorage.getItem(RELEASES_STORAGE_KEY));
-    });
+    const { items: releases } = usePage<{ items: ReleaseItem[] }>().props;
     const [newVersion, setNewVersion] = useState('');
-
-    useEffect(() => {
-        if (typeof window === 'undefined') {
-            return;
-        }
-
-        window.localStorage.setItem(
-            RELEASES_STORAGE_KEY,
-            JSON.stringify(releases),
-        );
-    }, [releases]);
 
     const addRelease = () => {
         if (!newVersion.trim()) {
             return;
         }
 
-        setReleases((current) => [...current, createRelease(newVersion)]);
+        router.post(
+            '/releases',
+            {
+                version: newVersion.trim(),
+                release_date: new Date().toISOString().split('T')[0],
+                features: [],
+            },
+            {
+                preserveScroll: true,
+            },
+        );
 
         setNewVersion('');
     };
 
     const deleteRelease = (id: number) => {
-        setReleases((current) =>
-            current.filter((release) => release.id !== id),
-        );
+        router.delete(`/releases/${id}`, {
+            preserveScroll: true,
+        });
     };
 
     const addFeature = (id: number) => {
@@ -57,12 +46,20 @@ export default function Releases() {
             return;
         }
 
-        setReleases((current) =>
-            current.map((release) =>
-                release.id === id
-                    ? { ...release, features: [...release.features, text] }
-                    : release,
-            ),
+        const release = releases.find((item) => item.id === id);
+
+        if (!release) {
+            return;
+        }
+
+        router.patch(
+            `/releases/${id}`,
+            {
+                features: [...release.features, text],
+            },
+            {
+                preserveScroll: true,
+            },
         );
     };
 
