@@ -6,28 +6,28 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class WorkspaceUpdate extends Model
+class ManagerTask extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
         'manager_id',
+        'employee_id',
         'title',
-        'body',
+        'description',
         'status',
-        'audience',
+        'priority',
     ];
-
-    /** @return BelongsTo<User, $this> */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 
     /** @return BelongsTo<User, $this> */
     public function manager(): BelongsTo
     {
         return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function employee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'employee_id');
     }
 }

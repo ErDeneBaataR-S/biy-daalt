@@ -13,24 +13,40 @@ class WorkspaceUpdateController extends Controller
 {
     public function index(Request $request): Response
     {
+        $query = WorkspaceUpdate::query()->with('manager:id,name,email')->latest();
+
+        if ($request->user()->isManager()) {
+            $query->where('manager_id', $request->user()->id);
+        } elseif ($request->user()->isEmployee()) {
+            $query->where('status', 'published')
+                ->where(function ($updates) use ($request) {
+                    $updates
+                        ->where('audience', 'all')
+                        ->orWhere('manager_id', $request->user()->manager_id);
+                });
+        }
+
         return Inertia::render('updates', [
-            'updates' => WorkspaceUpdate::query()
-                ->whereBelongsTo($request->user())
-                ->latest()
-                ->get(),
+            'updates' => $query->get(),
         ]);
     }
 
     public function store(WorkspaceUpdateRequest $request): RedirectResponse
     {
-        $request->user()->workspaceUpdates()->create($request->validated());
+        abort_unless($request->user()->isManager(), 403);
+
+        $request->user()->workspaceUpdates()->create([
+            'manager_id' => $request->user()->id,
+            'audience' => 'assigned',
+            ...$request->validated(),
+        ]);
 
         return back();
     }
 
     public function update(WorkspaceUpdateRequest $request, WorkspaceUpdate $workspaceUpdate): RedirectResponse
     {
-        $this->ensureOwner($request, $workspaceUpdate);
+        $this->ensureManagerOwner($request, $workspaceUpdate);
 
         $workspaceUpdate->update($request->validated());
 
@@ -39,15 +55,15 @@ class WorkspaceUpdateController extends Controller
 
     public function destroy(Request $request, WorkspaceUpdate $workspaceUpdate): RedirectResponse
     {
-        $this->ensureOwner($request, $workspaceUpdate);
+        $this->ensureManagerOwner($request, $workspaceUpdate);
 
         $workspaceUpdate->delete();
 
         return back();
     }
 
-    private function ensureOwner(Request $request, WorkspaceUpdate $workspaceUpdate): void
+    private function ensureManagerOwner(Request $request, WorkspaceUpdate $workspaceUpdate): void
     {
-        abort_unless($workspaceUpdate->user_id === $request->user()->id, 403);
+        abort_unless($request->user()->isManager() && $workspaceUpdate->manager_id === $request->user()->id, 403);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EmployeeTaskRequest;
 use App\Models\EmployeeTask;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -25,7 +26,10 @@ class EmployeeTaskController extends Controller
     {
         $this->validateType($type);
 
-        $request->user()->employeeTasks()->create([
+        $assignee = $this->resolveAssignee($request, $type);
+
+        $assignee->employeeTasks()->create([
+            'assigned_by_id' => $type === EmployeeTask::TYPE_ASSIGNED ? $request->user()->id : null,
             'type' => $type,
             ...$request->validated(),
         ]);
@@ -35,7 +39,7 @@ class EmployeeTaskController extends Controller
 
     public function update(EmployeeTaskRequest $request, EmployeeTask $employeeTask): RedirectResponse
     {
-        $this->ensureOwner($request, $employeeTask);
+        $this->ensureAllowed($request, $employeeTask);
 
         $employeeTask->update($request->validated());
 
@@ -44,7 +48,7 @@ class EmployeeTaskController extends Controller
 
     public function destroy(Request $request, EmployeeTask $employeeTask): RedirectResponse
     {
-        $this->ensureOwner($request, $employeeTask);
+        $this->ensureAllowed($request, $employeeTask);
 
         $employeeTask->delete();
 
@@ -62,13 +66,38 @@ class EmployeeTaskController extends Controller
         ]);
     }
 
-    private function ensureOwner(Request $request, EmployeeTask $employeeTask): void
+    private function ensureAllowed(Request $request, EmployeeTask $employeeTask): void
     {
-        abort_unless($employeeTask->user_id === $request->user()->id, 403);
+        $user = $request->user();
+
+        abort_unless(
+            $employeeTask->user_id === $user->id ||
+                ($user->isManager() && $employeeTask->assigned_by_id === $user->id),
+            403,
+        );
     }
 
     private function validateType(string $type): void
     {
         abort_unless(in_array($type, [EmployeeTask::TYPE_ASSIGNED, EmployeeTask::TYPE_PERSONAL], true), 404);
+    }
+
+    private function resolveAssignee(Request $request, string $type): User
+    {
+        if ($type === EmployeeTask::TYPE_PERSONAL) {
+            return $request->user();
+        }
+
+        abort_unless($request->user()->isManager(), 403);
+
+        $validated = $request->validate([
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+        ]);
+
+        $assignee = User::query()->findOrFail($validated['user_id']);
+
+        abort_unless($assignee->isEmployee() && $assignee->manager_id === $request->user()->id, 403);
+
+        return $assignee;
     }
 }

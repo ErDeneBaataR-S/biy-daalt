@@ -1,4 +1,4 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import {
     BellRing,
     BriefcaseBusiness,
@@ -18,6 +18,7 @@ import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import type { Auth, BreadcrumbItem } from '@/types';
@@ -29,6 +30,34 @@ import type {
     ReleaseDraft,
     ReleaseStatus,
 } from '@/types/dashboard';
+
+type ManagedEmployee = {
+    id: number;
+    name: string;
+    email: string;
+};
+
+type ManagerTask = {
+    id: number;
+    title: string;
+    status: string;
+    employee_id?: number | null;
+    employee?: ManagedEmployee | null;
+};
+
+type ManagerUpdate = {
+    id: number;
+    title: string;
+    status: string;
+    audience: string;
+};
+
+type ImprovementIdea = {
+    id: number;
+    title: string;
+    priority: string;
+    submitted_by?: ManagedEmployee | null;
+};
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -175,7 +204,15 @@ function getReleaseTone(status: ReleaseStatus) {
 }
 
 export default function Dashboard() {
-    const { auth } = usePage<{ auth: Auth }>().props;
+    const { auth, employees, assignedTasks, managerTasks, updates, ideas } =
+        usePage<{
+            auth: Auth;
+            employees: ManagedEmployee[];
+            assignedTasks: ManagerTask[];
+            managerTasks: ManagerTask[];
+            updates: ManagerUpdate[];
+            ideas: ImprovementIdea[];
+        }>().props;
     const [{ initiatives: initialInitiatives, releases: initialReleases }] =
         useState(readDashboardData);
     const [searchValue, setSearchValue] = useState('');
@@ -187,6 +224,12 @@ export default function Dashboard() {
     const [editingInitiative, setEditingInitiative] =
         useState<Initiative | null>(null);
     const [editingRelease, setEditingRelease] = useState<Release | null>(null);
+    const [selectedEmployeeId, setSelectedEmployeeId] = useState(
+        employees[0]?.id ? String(employees[0].id) : '',
+    );
+    const [selectedTaskId, setSelectedTaskId] = useState('');
+    const [assignmentTitle, setAssignmentTitle] = useState('');
+    const [updateTitle, setUpdateTitle] = useState('');
 
     useEffect(() => {
         if (typeof window === 'undefined') {
@@ -243,6 +286,9 @@ export default function Dashboard() {
     const upcomingReleases = releases.filter(
         (release) => release.status !== 'shipped',
     ).length;
+    const unassignedManagerTasks = managerTasks.filter(
+        (task) => task.status === 'unassigned',
+    );
 
     const metrics = [
         {
@@ -344,6 +390,54 @@ export default function Dashboard() {
             ),
         );
         setEditingRelease(null);
+    };
+
+    const createManagerTask = () => {
+        if (!assignmentTitle.trim()) {
+            return;
+        }
+
+        router.post(
+            '/manager/tasks',
+            {
+                title: assignmentTitle.trim(),
+                priority: 'medium',
+            },
+            { preserveScroll: true },
+        );
+        setAssignmentTitle('');
+    };
+
+    const assignManagerTask = () => {
+        if (!selectedTaskId || !selectedEmployeeId) {
+            return;
+        }
+
+        router.patch(
+            `/manager/tasks/${selectedTaskId}/assign`,
+            {
+                employee_id: Number(selectedEmployeeId),
+            },
+            { preserveScroll: true },
+        );
+        setSelectedTaskId('');
+    };
+
+    const createUpdate = () => {
+        if (!updateTitle.trim()) {
+            return;
+        }
+
+        router.post(
+            '/updates',
+            {
+                title: updateTitle.trim(),
+                status: 'published',
+                audience: 'assigned',
+            },
+            { preserveScroll: true },
+        );
+        setUpdateTitle('');
     };
 
     return (
@@ -508,6 +602,164 @@ export default function Dashboard() {
                     </DashboardPanel>
 
                     <div className="grid gap-4">
+                        <DashboardPanel
+                            title="Employee Control"
+                            description="Assign work, publish updates, and approve employee ideas into todo work."
+                        >
+                            <div className="space-y-4">
+                                <div className="rounded-[1.1rem] border border-slate-200 bg-slate-50/80 p-3">
+                                    <p className="mb-2 text-sm font-semibold text-slate-800">
+                                        Add task
+                                    </p>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            value={assignmentTitle}
+                                            onChange={(event) =>
+                                                setAssignmentTitle(
+                                                    event.target.value,
+                                                )
+                                            }
+                                            placeholder="Task title"
+                                        />
+                                        <Button onClick={createManagerTask}>
+                                            Add
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                <div className="rounded-[1.1rem] border border-slate-200 bg-slate-50/80 p-3">
+                                    <p className="mb-2 text-sm font-semibold text-slate-800">
+                                        Assign task to employee
+                                    </p>
+                                    <div className="grid gap-2">
+                                        <select
+                                            value={selectedTaskId}
+                                            onChange={(event) =>
+                                                setSelectedTaskId(
+                                                    event.target.value,
+                                                )
+                                            }
+                                            className="h-9 rounded-md border border-slate-200 bg-white px-3 text-sm"
+                                        >
+                                            <option value="">
+                                                Select unassigned task
+                                            </option>
+                                            {unassignedManagerTasks.map(
+                                                (task) => (
+                                                    <option
+                                                        key={task.id}
+                                                        value={task.id}
+                                                    >
+                                                        {task.title}
+                                                    </option>
+                                                ),
+                                            )}
+                                        </select>
+                                        <select
+                                            value={selectedEmployeeId}
+                                            onChange={(event) =>
+                                                setSelectedEmployeeId(
+                                                    event.target.value,
+                                                )
+                                            }
+                                            className="h-9 rounded-md border border-slate-200 bg-white px-3 text-sm"
+                                        >
+                                            {employees.length === 0 ? (
+                                                <option value="">
+                                                    No assigned employees
+                                                </option>
+                                            ) : (
+                                                employees.map((employee) => (
+                                                    <option
+                                                        key={employee.id}
+                                                        value={employee.id}
+                                                    >
+                                                        {employee.name}
+                                                    </option>
+                                                ))
+                                            )}
+                                        </select>
+                                        <Button onClick={assignManagerTask}>
+                                            Assign
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                <div className="rounded-[1.1rem] border border-slate-200 bg-slate-50/80 p-3">
+                                    <p className="mb-2 text-sm font-semibold text-slate-800">
+                                        Publish update
+                                    </p>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            value={updateTitle}
+                                            onChange={(event) =>
+                                                setUpdateTitle(
+                                                    event.target.value,
+                                                )
+                                            }
+                                            placeholder="Update title"
+                                        />
+                                        <Button onClick={createUpdate}>
+                                            Publish
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <p className="text-sm font-semibold text-slate-800">
+                                        Pending improvement ideas
+                                    </p>
+                                    {ideas.length === 0 ? (
+                                        <p className="text-sm text-slate-500">
+                                            No employee ideas waiting.
+                                        </p>
+                                    ) : (
+                                        ideas.slice(0, 4).map((idea) => (
+                                            <div
+                                                key={idea.id}
+                                                className="flex items-center justify-between gap-2 rounded-md border border-slate-200 bg-white px-3 py-2"
+                                            >
+                                                <div className="min-w-0">
+                                                    <p className="truncate text-sm font-medium text-slate-800">
+                                                        {idea.title}
+                                                    </p>
+                                                    <p className="text-xs text-slate-500">
+                                                        {
+                                                            idea.submitted_by
+                                                                ?.name
+                                                        }
+                                                    </p>
+                                                </div>
+                                                <Button
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        router.patch(
+                                                            `/feedback/${idea.id}/approve`,
+                                                            {},
+                                                            {
+                                                                preserveScroll: true,
+                                                            },
+                                                        )
+                                                    }
+                                                >
+                                                    Approve
+                                                </Button>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+
+                                <div className="grid gap-2 text-sm text-slate-500">
+                                    <p>
+                                        {unassignedManagerTasks.length}{' '}
+                                        unassigned tasks
+                                    </p>
+                                    <p>{assignedTasks.length} assigned tasks</p>
+                                    <p>{updates.length} manager updates</p>
+                                </div>
+                            </div>
+                        </DashboardPanel>
+
                         <DashboardPanel
                             title="Releases"
                             description="Plan and update release information before backend persistence exists."

@@ -1,5 +1,6 @@
 import {
     BookOpenText,
+    BellRing,
     CalendarRange,
     ChartColumnBig,
     LayoutGrid,
@@ -40,6 +41,11 @@ export function getSidebarItems(role: UserRole): NavItem[] {
                 title: 'Analytics',
                 href: '/analytics',
                 icon: ChartColumnBig,
+            },
+            {
+                title: 'Updates',
+                href: '/updates',
+                icon: BellRing,
             },
             {
                 title: 'Docs',
@@ -124,6 +130,11 @@ export function getSidebarItems(role: UserRole): NavItem[] {
             title: 'Analytics',
             href: '/analytics',
             icon: ChartColumnBig,
+        },
+        {
+            title: 'Updates',
+            href: '/updates',
+            icon: BellRing,
         },
         {
             title: 'Docs',

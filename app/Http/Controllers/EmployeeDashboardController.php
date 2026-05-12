@@ -29,7 +29,12 @@ class EmployeeDashboardController extends Controller
             ->get();
 
         $updates = WorkspaceUpdate::query()
-            ->whereBelongsTo($user)
+            ->where('status', 'published')
+            ->where(function ($updates) use ($user) {
+                $updates
+                    ->where('audience', 'all')
+                    ->orWhere('manager_id', $user->manager_id);
+            })
             ->latest()
             ->take(5)
             ->get();
@@ -50,7 +55,12 @@ class EmployeeDashboardController extends Controller
                     ->where('status', '!=', 'done')
                     ->count(),
                 'updatesTotal' => WorkspaceUpdate::query()
-                    ->whereBelongsTo($user)
+                    ->where('status', 'published')
+                    ->where(function ($updates) use ($user) {
+                        $updates
+                            ->where('audience', 'all')
+                            ->orWhere('manager_id', $user->manager_id);
+                    })
                     ->count(),
             ],
         ]);
