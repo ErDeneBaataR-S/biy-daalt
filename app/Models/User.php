@@ -4,10 +4,11 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
-use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use InvalidArgumentException;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
 class User extends Authenticatable
@@ -100,5 +101,17 @@ class User extends Authenticatable
     public function isEmployee(): bool
     {
         return $this->hasRole(self::ROLE_EMPLOYEE);
+    }
+
+    /** @return HasMany<EmployeeTask, $this> */
+    public function employeeTasks(): HasMany
+    {
+        return $this->hasMany(EmployeeTask::class);
+    }
+
+    /** @return HasMany<WorkspaceUpdate, $this> */
+    public function workspaceUpdates(): HasMany
+    {
+        return $this->hasMany(WorkspaceUpdate::class);
     }
 }

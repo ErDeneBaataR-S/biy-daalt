@@ -3,10 +3,13 @@
 use App\Http\Controllers\Admin\AccessController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\BacklogItemController;
+use App\Http\Controllers\EmployeeDashboardController;
+use App\Http\Controllers\EmployeeTaskController;
 use App\Http\Controllers\FeedbackItemController;
 use App\Http\Controllers\ProductReleaseController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RoadmapItemController;
+use App\Http\Controllers\WorkspaceUpdateController;
 use App\Support\RoleHome;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -36,8 +39,11 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::get('access', AccessController::class)->name('access');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:manager'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
     Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');
     Route::patch('projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
@@ -68,10 +74,19 @@ Route::middleware(['auth', 'verified', 'role:admin,manager'])->group(function ()
 });
 
 Route::middleware(['auth', 'verified', 'role:employee'])->group(function () {
-    Route::inertia('my-dashboard', 'my-dashboard')->name('my-dashboard');
-    Route::inertia('my-tasks', 'my-tasks')->name('my-tasks');
-    Route::inertia('personal-tasks', 'personal-tasks')->name('personal-tasks');
-    Route::inertia('updates', 'updates')->name('updates');
+    Route::get('my-dashboard', EmployeeDashboardController::class)->name('my-dashboard');
+    Route::get('my-tasks', [EmployeeTaskController::class, 'assigned'])->name('my-tasks');
+    Route::post('my-tasks', [EmployeeTaskController::class, 'store'])->defaults('type', 'assigned')->name('my-tasks.store');
+    Route::patch('my-tasks/{employeeTask}', [EmployeeTaskController::class, 'update'])->name('my-tasks.update');
+    Route::delete('my-tasks/{employeeTask}', [EmployeeTaskController::class, 'destroy'])->name('my-tasks.destroy');
+    Route::get('personal-tasks', [EmployeeTaskController::class, 'personal'])->name('personal-tasks');
+    Route::post('personal-tasks', [EmployeeTaskController::class, 'store'])->defaults('type', 'personal')->name('personal-tasks.store');
+    Route::patch('personal-tasks/{employeeTask}', [EmployeeTaskController::class, 'update'])->name('personal-tasks.update');
+    Route::delete('personal-tasks/{employeeTask}', [EmployeeTaskController::class, 'destroy'])->name('personal-tasks.destroy');
+    Route::get('updates', [WorkspaceUpdateController::class, 'index'])->name('updates');
+    Route::post('updates', [WorkspaceUpdateController::class, 'store'])->name('updates.store');
+    Route::patch('updates/{workspaceUpdate}', [WorkspaceUpdateController::class, 'update'])->name('updates.update');
+    Route::delete('updates/{workspaceUpdate}', [WorkspaceUpdateController::class, 'destroy'])->name('updates.destroy');
 });
 
 require __DIR__.'/settings.php';

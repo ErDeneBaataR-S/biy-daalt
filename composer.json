@@ -1,8 +1,8 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/react-starter-kit",
+    "name": "team-pulse/app",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "TeamPulse role-based project and team workspace.",
     "keywords": [
         "laravel",
         "framework"
@@ -66,6 +66,7 @@
             "Composer\\Config::disableProcessTimeout",
             "npm run lint:check",
             "npm run format:check",
+            "npm run test:frontend",
             "npm run types:check",
             "@test"
         ],

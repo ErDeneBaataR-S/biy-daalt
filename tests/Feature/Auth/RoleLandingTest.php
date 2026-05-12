@@ -2,8 +2,8 @@
 
 use App\Models\User;
 use App\Support\RoleHome;
-use Inertia\Testing\AssertableInertia as Assert;
 use Illuminate\Support\Facades\Schema;
+use Inertia\Testing\AssertableInertia as Assert;
 
 test('user factory can create each supported role', function () {
     expect(User::factory()->admin()->make()->role)->toBe('admin');
@@ -52,7 +52,7 @@ test('role home resolves the planned route names for each role', function () {
     expect(RoleHome::routeNameFor(User::factory()->admin()->make()))
         ->toBe('admin.overview')
         ->and(RoleHome::routeNameFor(User::factory()->manager()->make()))
-        ->toBe('my-dashboard')
+        ->toBe('dashboard')
         ->and(RoleHome::routeNameFor(User::factory()->employee()->make()))
         ->toBe('my-dashboard');
 });
@@ -73,19 +73,24 @@ test('employee is redirected to my dashboard after hitting the landing route', f
         ->assertRedirect(route('my-dashboard'));
 });
 
-test('manager is redirected to my dashboard after hitting the landing route', function () {
+test('manager is redirected to the manager dashboard after hitting the landing route', function () {
     $user = User::factory()->manager()->create();
 
     $this->actingAs($user)
         ->get(route('home'))
-        ->assertRedirect(route('my-dashboard'));
+        ->assertRedirect(route('dashboard'));
+
+    $this->actingAs($user)
+        ->followingRedirects()
+        ->get(route('home'))
+        ->assertOk();
 });
 
 test('employee inertia props include role and capability flags', function () {
     $user = User::factory()->employee()->create();
 
     $this->actingAs($user)
-        ->get(route('dashboard'))
+        ->get(route('my-dashboard'))
         ->assertInertia(fn (Assert $page) => $page
             ->where('auth.user.role', User::ROLE_EMPLOYEE)
             ->where('auth.capabilities.access_admin', false)
