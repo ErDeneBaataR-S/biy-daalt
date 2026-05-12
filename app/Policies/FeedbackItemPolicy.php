@@ -8,12 +8,12 @@ class FeedbackItemPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $this->canManage($user);
+        return $this->canManage($user) || $user->isEmployee();
     }
 
     public function create(User $user): bool
     {
-        return $this->canManage($user);
+        return $this->canManage($user) || $user->isEmployee();
     }
 
     public function update(User $user): bool

@@ -16,6 +16,8 @@ class EmployeeTask extends Model
 
     protected $fillable = [
         'user_id',
+        'assigned_by_id',
+        'feedback_item_id',
         'type',
         'title',
         'description',
@@ -35,5 +37,17 @@ class EmployeeTask extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function assignedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_by_id');
+    }
+
+    /** @return BelongsTo<FeedbackItem, $this> */
+    public function feedbackItem(): BelongsTo
+    {
+        return $this->belongsTo(FeedbackItem::class);
     }
 }

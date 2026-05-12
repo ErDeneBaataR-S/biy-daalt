@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
-import type { BreadcrumbItem } from '@/types';
+import type { Auth, BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -27,11 +27,21 @@ type WorkspaceUpdate = {
     title: string;
     body: string | null;
     status: string;
+    audience: string;
     created_at: string;
+    manager?: {
+        id: number;
+        name: string;
+        email: string;
+    } | null;
 };
 
 export default function Updates() {
-    const { updates } = usePage<{ updates: WorkspaceUpdate[] }>().props;
+    const { auth, updates } = usePage<{
+        auth: Auth;
+        updates: WorkspaceUpdate[];
+    }>().props;
+    const canManage = auth.user.role === 'manager';
     const [title, setTitle] = useState('');
 
     const createUpdate = () => {
@@ -57,33 +67,41 @@ export default function Updates() {
             <div className="space-y-6 px-4 py-6">
                 <Heading
                     title="Updates"
-                    description="A connected updates feed for employee notes, announcements, and follow-up records."
+                    description={
+                        canManage
+                            ? 'Publish updates for your assigned employees. Admins can see the feed for oversight.'
+                            : 'Read manager-published updates connected to your workspace.'
+                    }
                 />
 
-                <Card className="border-slate-200 bg-white/95 shadow-sm dark:border-slate-700/60 dark:bg-[#111827]">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-base">
-                            <Megaphone className="size-4 text-sky-600" />
-                            Shared updates feed
-                        </CardTitle>
-                        <CardDescription>
-                            Add update records and mark them as draft or
-                            published.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex flex-wrap gap-2">
-                        <Input
-                            value={title}
-                            onChange={(event) => setTitle(event.target.value)}
-                            placeholder="New update"
-                            className="max-w-sm"
-                        />
-                        <Button onClick={createUpdate}>
-                            <Plus className="size-4" />
-                            Add
-                        </Button>
-                    </CardContent>
-                </Card>
+                {canManage ? (
+                    <Card className="border-slate-200 bg-white/95 shadow-sm dark:border-slate-700/60 dark:bg-[#111827]">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-base">
+                                <Megaphone className="size-4 text-sky-600" />
+                                Shared updates feed
+                            </CardTitle>
+                            <CardDescription>
+                                Add update records and mark them as draft or
+                                published.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex flex-wrap gap-2">
+                            <Input
+                                value={title}
+                                onChange={(event) =>
+                                    setTitle(event.target.value)
+                                }
+                                placeholder="New update"
+                                className="max-w-sm"
+                            />
+                            <Button onClick={createUpdate}>
+                                <Plus className="size-4" />
+                                Add
+                            </Button>
+                        </CardContent>
+                    </Card>
+                ) : null}
 
                 <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                     {updates.map((update) => (
@@ -98,7 +116,10 @@ export default function Updates() {
                                             {update.title}
                                         </CardTitle>
                                         <CardDescription>
-                                            {update.body ?? 'No details yet.'}
+                                            {update.manager?.name
+                                                ? `By ${update.manager.name}`
+                                                : (update.body ??
+                                                  'No details yet.')}
                                         </CardDescription>
                                     </div>
                                     <Badge variant="outline">
@@ -107,39 +128,46 @@ export default function Updates() {
                                 </div>
                             </CardHeader>
                             <CardContent className="flex flex-wrap items-center justify-between gap-2">
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() =>
-                                        router.patch(
-                                            `/updates/${update.id}`,
-                                            {
-                                                status:
-                                                    update.status ===
-                                                    'published'
-                                                        ? 'draft'
-                                                        : 'published',
-                                            },
-                                            { preserveScroll: true },
-                                        )
-                                    }
-                                >
-                                    {update.status === 'published'
-                                        ? 'Move to draft'
-                                        : 'Publish'}
-                                </Button>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() =>
-                                        router.delete(`/updates/${update.id}`, {
-                                            preserveScroll: true,
-                                        })
-                                    }
-                                    aria-label={`Delete ${update.title}`}
-                                >
-                                    <Trash2 className="size-4" />
-                                </Button>
+                                {canManage ? (
+                                    <>
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={() =>
+                                                router.patch(
+                                                    `/updates/${update.id}`,
+                                                    {
+                                                        status:
+                                                            update.status ===
+                                                            'published'
+                                                                ? 'draft'
+                                                                : 'published',
+                                                    },
+                                                    { preserveScroll: true },
+                                                )
+                                            }
+                                        >
+                                            {update.status === 'published'
+                                                ? 'Move to draft'
+                                                : 'Publish'}
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() =>
+                                                router.delete(
+                                                    `/updates/${update.id}`,
+                                                    {
+                                                        preserveScroll: true,
+                                                    },
+                                                )
+                                            }
+                                            aria-label={`Delete ${update.title}`}
+                                        >
+                                            <Trash2 className="size-4" />
+                                        </Button>
+                                    </>
+                                ) : null}
                             </CardContent>
                         </Card>
                     ))}

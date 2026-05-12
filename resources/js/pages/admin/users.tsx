@@ -55,6 +55,7 @@ type AdminUser = {
     name: string;
     email: string;
     role: UserRole;
+    manager_id: number | null;
     email_verified_at: string | null;
     created_at: string;
 };
@@ -69,6 +70,7 @@ type UserForm = {
 type PageProps = {
     auth: Auth;
     users: AdminUser[];
+    managers: Pick<AdminUser, 'id' | 'name' | 'email'>[];
     roles: UserRole[];
     errors: Partial<Record<keyof UserForm, string>>;
 };
@@ -87,7 +89,7 @@ const roleLabels: Record<UserRole, string> = {
 };
 
 export default function AdminUsers() {
-    const { auth, users, roles, errors } = usePage<PageProps>().props;
+    const { auth, users, managers, roles, errors } = usePage<PageProps>().props;
     const [search, setSearch] = useState('');
     const [dialogOpen, setDialogOpen] = useState(false);
     const [form, setForm] = useState<UserForm>(emptyForm);
@@ -131,6 +133,14 @@ export default function AdminUsers() {
         router.patch(
             `/admin/users/${user.id}/role`,
             { role },
+            { preserveScroll: true },
+        );
+    };
+
+    const updateManager = (user: AdminUser, managerId: string) => {
+        router.patch(
+            `/admin/users/${user.id}/manager`,
+            { manager_id: managerId === 'none' ? null : Number(managerId) },
             { preserveScroll: true },
         );
     };
@@ -313,6 +323,7 @@ export default function AdminUsers() {
                                 <tr>
                                     <th className="py-3 pr-4">User</th>
                                     <th className="py-3 pr-4">Role</th>
+                                    <th className="py-3 pr-4">Manager</th>
                                     <th className="py-3 pr-4">Verified</th>
                                     <th className="py-3 pr-4">Created</th>
                                     <th className="py-3 text-right">Actions</th>
@@ -334,6 +345,56 @@ export default function AdminUsers() {
                                                         {user.email}
                                                     </div>
                                                 </div>
+                                            </td>
+                                            <td className="py-4 pr-4">
+                                                {user.role === 'employee' ? (
+                                                    <Select
+                                                        value={
+                                                            user.manager_id
+                                                                ? String(
+                                                                      user.manager_id,
+                                                                  )
+                                                                : 'none'
+                                                        }
+                                                        onValueChange={(
+                                                            managerId,
+                                                        ) =>
+                                                            updateManager(
+                                                                user,
+                                                                managerId,
+                                                            )
+                                                        }
+                                                    >
+                                                        <SelectTrigger className="w-44">
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="none">
+                                                                Unassigned
+                                                            </SelectItem>
+                                                            {managers.map(
+                                                                (manager) => (
+                                                                    <SelectItem
+                                                                        key={
+                                                                            manager.id
+                                                                        }
+                                                                        value={String(
+                                                                            manager.id,
+                                                                        )}
+                                                                    >
+                                                                        {
+                                                                            manager.name
+                                                                        }
+                                                                    </SelectItem>
+                                                                ),
+                                                            )}
+                                                        </SelectContent>
+                                                    </Select>
+                                                ) : (
+                                                    <span className="text-slate-400">
+                                                        -
+                                                    </span>
+                                                )}
                                             </td>
                                             <td className="py-4 pr-4">
                                                 <Select

@@ -17,6 +17,7 @@ class WorkspaceUpdateRequest extends FormRequest
             'title' => [$this->isMethod('patch') ? 'sometimes' : 'required', 'string', 'max:255'],
             'body' => ['nullable', 'string'],
             'status' => ['sometimes', 'string', 'max:50'],
+            'audience' => ['sometimes', 'string', 'max:50'],
         ];
     }
 }

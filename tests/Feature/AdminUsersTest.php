@@ -42,6 +42,7 @@ test('admin can create a user with a role', function () {
 
     expect($user->name)->toBe('New Manager')
         ->and($user->role)->toBe(User::ROLE_MANAGER)
+        ->and($user->email_verified_at)->not->toBeNull()
         ->and(Hash::check('password', $user->password))->toBeTrue();
 });
 

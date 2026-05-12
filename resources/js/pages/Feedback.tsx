@@ -7,23 +7,46 @@ import {
     getFeedbackPriorityColor,
     isDeadlineOverdue,
 } from '@/pages/feedback-state';
+import type { Auth } from '@/types';
 
 type FeedbackItem = {
     id: number;
+    submittedBy?: {
+        id: number;
+        name: string;
+        email: string;
+    } | null;
     title: string;
     description: string;
     status: string;
     priority: string;
     deadline: string;
+    approvedAt?: string | null;
 };
 
 export default function Feedback() {
-    const { items: feedbacks } = usePage<{ items: FeedbackItem[] }>().props;
+    const { auth, items: feedbacks } = usePage<{
+        auth: Auth;
+        items: FeedbackItem[];
+    }>().props;
+    const canManage =
+        auth.user.role === 'admin' || auth.user.role === 'manager';
 
     const addFeedback = () => {
-        router.post('/feedback', createDefaultFeedback(), {
-            preserveScroll: true,
-        });
+        router.post(
+            '/feedback',
+            {
+                ...createDefaultFeedback(),
+                title:
+                    auth.user.role === 'employee'
+                        ? 'New improvement idea'
+                        : 'New feedback',
+                status: auth.user.role === 'employee' ? 'Open' : 'Open',
+            },
+            {
+                preserveScroll: true,
+            },
+        );
     };
 
     const deleteFeedback = (id: number) => {
@@ -51,13 +74,15 @@ export default function Feedback() {
             <div className="p-6 dark:bg-[#0b1220]">
                 <div className="mb-6 flex items-center justify-between">
                     <h1 className="text-2xl font-bold dark:text-slate-100">
-                        Feedback
+                        {auth.user.role === 'employee'
+                            ? 'Improvement Ideas'
+                            : 'Feedback'}
                     </h1>
                     <button
                         onClick={addFeedback}
                         className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
                     >
-                        + Add
+                        {auth.user.role === 'employee' ? '+ Add idea' : '+ Add'}
                     </button>
                 </div>
 
@@ -80,7 +105,9 @@ export default function Feedback() {
                                         {feedback.title}
                                     </h3>
                                     <p className="text-sm text-gray-500 dark:text-slate-400">
-                                        {feedback.description}
+                                        {feedback.submittedBy?.name
+                                            ? `Submitted by ${feedback.submittedBy.name}`
+                                            : feedback.description}
                                     </p>
 
                                     <span
@@ -95,53 +122,81 @@ export default function Feedback() {
                                         Deadline: {feedback.deadline}
                                     </p>
 
-                                    <div className="mt-2 flex justify-end gap-2">
-                                        <select
-                                            value={feedback.status}
-                                            onChange={(e) =>
-                                                updateFeedback(feedback.id, {
-                                                    status: e.target.value,
-                                                })
-                                            }
-                                            className="rounded border px-2 py-1 text-sm dark:border-slate-700 dark:bg-[#162033] dark:text-slate-100"
-                                        >
-                                            {feedbackStatusOptions.map(
-                                                (status) => (
-                                                    <option key={status}>
-                                                        {status}
-                                                    </option>
-                                                ),
-                                            )}
-                                        </select>
+                                    {canManage ? (
+                                        <div className="mt-2 flex flex-wrap justify-end gap-2">
+                                            <select
+                                                value={feedback.status}
+                                                onChange={(e) =>
+                                                    updateFeedback(
+                                                        feedback.id,
+                                                        {
+                                                            status: e.target
+                                                                .value,
+                                                        },
+                                                    )
+                                                }
+                                                className="rounded border px-2 py-1 text-sm dark:border-slate-700 dark:bg-[#162033] dark:text-slate-100"
+                                            >
+                                                {feedbackStatusOptions.map(
+                                                    (status) => (
+                                                        <option key={status}>
+                                                            {status}
+                                                        </option>
+                                                    ),
+                                                )}
+                                            </select>
 
-                                        <select
-                                            value={feedback.priority}
-                                            onChange={(e) =>
-                                                updateFeedback(feedback.id, {
-                                                    priority: e.target.value,
-                                                })
-                                            }
-                                            className="rounded border px-2 py-1 text-sm dark:border-slate-700 dark:bg-[#162033] dark:text-slate-100"
-                                        >
-                                            {feedbackPriorityOptions.map(
-                                                (priority) => (
-                                                    <option key={priority}>
-                                                        {priority}
-                                                    </option>
-                                                ),
-                                            )}
-                                        </select>
+                                            <select
+                                                value={feedback.priority}
+                                                onChange={(e) =>
+                                                    updateFeedback(
+                                                        feedback.id,
+                                                        {
+                                                            priority:
+                                                                e.target.value,
+                                                        },
+                                                    )
+                                                }
+                                                className="rounded border px-2 py-1 text-sm dark:border-slate-700 dark:bg-[#162033] dark:text-slate-100"
+                                            >
+                                                {feedbackPriorityOptions.map(
+                                                    (priority) => (
+                                                        <option key={priority}>
+                                                            {priority}
+                                                        </option>
+                                                    ),
+                                                )}
+                                            </select>
 
-                                        <button
-                                            onClick={() =>
-                                                deleteFeedback(feedback.id)
-                                            }
-                                            className="text-red-500 dark:text-rose-300"
-                                            aria-label={`Delete ${feedback.title}`}
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
+                                            {!feedback.approvedAt &&
+                                            feedback.submittedBy ? (
+                                                <button
+                                                    onClick={() =>
+                                                        router.patch(
+                                                            `/feedback/${feedback.id}/approve`,
+                                                            {},
+                                                            {
+                                                                preserveScroll: true,
+                                                            },
+                                                        )
+                                                    }
+                                                    className="text-emerald-600 dark:text-emerald-300"
+                                                >
+                                                    Approve to todo
+                                                </button>
+                                            ) : null}
+
+                                            <button
+                                                onClick={() =>
+                                                    deleteFeedback(feedback.id)
+                                                }
+                                                className="text-red-500 dark:text-rose-300"
+                                                aria-label={`Delete ${feedback.title}`}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    ) : null}
                                 </div>
                             ))}
                         </div>

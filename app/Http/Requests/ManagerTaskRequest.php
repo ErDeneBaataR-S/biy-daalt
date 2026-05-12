@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EmployeeTaskRequest extends FormRequest
+class ManagerTaskRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,12 +14,9 @@ class EmployeeTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => [$this->isMethod('patch') ? 'sometimes' : 'required', 'string', 'max:255'],
-            'user_id' => ['sometimes', 'integer', 'exists:users,id'],
+            'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'status' => ['sometimes', 'string', 'max:50'],
             'priority' => ['sometimes', 'string', 'max:50'],
-            'due_date' => ['nullable', 'date'],
         ];
     }
 }

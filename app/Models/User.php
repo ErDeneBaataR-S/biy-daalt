@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -32,6 +33,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'manager_id',
     ];
 
     /**
@@ -113,5 +115,29 @@ class User extends Authenticatable
     public function workspaceUpdates(): HasMany
     {
         return $this->hasMany(WorkspaceUpdate::class);
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function manager(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    /** @return HasMany<User, $this> */
+    public function employees(): HasMany
+    {
+        return $this->hasMany(User::class, 'manager_id');
+    }
+
+    /** @return HasMany<EmployeeTask, $this> */
+    public function assignedEmployeeTasks(): HasMany
+    {
+        return $this->hasMany(EmployeeTask::class, 'assigned_by_id');
+    }
+
+    /** @return HasMany<ManagerTask, $this> */
+    public function managerTasks(): HasMany
+    {
+        return $this->hasMany(ManagerTask::class, 'manager_id');
     }
 }
