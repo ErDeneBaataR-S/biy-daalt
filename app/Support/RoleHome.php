@@ -10,6 +10,7 @@ class RoleHome
     {
         return match ($user->role) {
             User::ROLE_ADMIN => 'admin.overview',
+            User::ROLE_MANAGER => 'dashboard',
             default => 'my-dashboard',
         };
     }

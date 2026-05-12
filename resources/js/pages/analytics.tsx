@@ -148,9 +148,7 @@ function TrendBars({
 export default function Analytics() {
     const { auth } = usePage<{ auth: Auth }>().props;
     const isAdmin = auth.user.role === 'admin';
-    const pageTitle = isAdmin
-        ? 'Organization Analytics'
-        : 'Delivery Analytics';
+    const pageTitle = isAdmin ? 'Organization Analytics' : 'Delivery Analytics';
     const pageDescription = isAdmin
         ? 'Organization-wide trends, portfolio visibility, and workflow signals across backlog, feedback, and releases.'
         : 'Delivery-focused trends and workflow signals across backlog, feedback, and releases.';
@@ -162,7 +160,9 @@ export default function Analytics() {
             <div className="space-y-6 px-4 py-6">
                 <section>
                     <p className="text-xs font-semibold tracking-[0.18em] text-sky-500 uppercase">
-                        {isAdmin ? 'Organization intelligence' : 'Delivery intelligence'}
+                        {isAdmin
+                            ? 'Organization intelligence'
+                            : 'Delivery intelligence'}
                     </p>
                     <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
                         <div>

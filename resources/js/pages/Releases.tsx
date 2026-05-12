@@ -127,7 +127,7 @@ export default function Releases() {
                                     ) : (
                                         r.features.map(
                                             (f: string, i: number) => (
-                                                <li key={i}>• {f}</li>
+                                                <li key={i}>- {f}</li>
                                             ),
                                         )
                                     )}

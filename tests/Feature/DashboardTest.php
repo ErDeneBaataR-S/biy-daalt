@@ -9,7 +9,7 @@ test('guests are redirected to the login page', function () {
 });
 
 test('authenticated users can visit the dashboard inertia page', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->manager()->create();
     $this->actingAs($user);
 
     $response = $this->get(route('dashboard'));
@@ -18,4 +18,20 @@ test('authenticated users can visit the dashboard inertia page', function () {
     $response->assertInertia(fn (Assert $page) => $page
         ->component('dashboard')
     );
+});
+
+test('admins cannot visit the manager dashboard directly', function () {
+    $user = User::factory()->admin()->create();
+
+    $this->actingAs($user)
+        ->get(route('dashboard'))
+        ->assertForbidden();
+});
+
+test('employees cannot visit the manager dashboard directly', function () {
+    $user = User::factory()->employee()->create();
+
+    $this->actingAs($user)
+        ->get(route('dashboard'))
+        ->assertForbidden();
 });

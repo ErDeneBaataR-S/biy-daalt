@@ -8,10 +8,10 @@ export default function AppLogo() {
             </div>
             <div className="ml-2 grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate text-[0.95rem] font-semibold text-slate-900 dark:text-slate-100">
-                    Product Management
+                    TeamPulse
                 </span>
                 <span className="truncate text-xs text-slate-500 dark:text-slate-400">
-                    System
+                    Work hub
                 </span>
             </div>
         </>

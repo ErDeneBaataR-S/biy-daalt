@@ -280,7 +280,9 @@ export default function Dashboard() {
     ];
 
     const workspaceLabel =
-        auth.user.role === 'manager' ? 'Manager workspace' : 'Product workspace';
+        auth.user.role === 'manager'
+            ? 'Manager workspace'
+            : 'Product workspace';
     const workspaceDescription =
         auth.user.role === 'manager'
             ? 'Planning-focused overview with local CRUD for initiatives and releases.'
@@ -346,7 +348,7 @@ export default function Dashboard() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Product Management System" />
+            <Head title="Manager Dashboard" />
 
             <DashboardShell
                 searchValue={searchValue}
@@ -374,7 +376,7 @@ export default function Dashboard() {
                             </p>
                         </div>
                         <div className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-500">
-                            {filteredInitiatives.length} initiatives •{' '}
+                            {filteredInitiatives.length} initiatives /{' '}
                             {filteredReleases.length} releases
                         </div>
                     </div>
@@ -551,7 +553,7 @@ export default function Dashboard() {
                                                         </Badge>
                                                     </div>
                                                     <p className="mt-1 text-sm text-slate-500">
-                                                        {release.version} •{' '}
+                                                        {release.version} /{' '}
                                                         {formatReleaseDate(
                                                             release.targetDate,
                                                         )}
